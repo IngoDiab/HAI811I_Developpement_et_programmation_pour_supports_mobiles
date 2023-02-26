@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ex8</string>
+    <string name="start">Start</string>
+    <string name="end">End</string>
+    <string name="validate">Submit</string>
+    <string name="moneySign">\u00a3</string>
+</resources>

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Ex9</string>
+    <string name="addEvent_placeholder">Ajoutez un évènement</string>
+    <string name="validateEvent">VALIDER</string>
+</resources>

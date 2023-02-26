@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, HelloActivity!</string>
+    <string name="app_name">My Application</string>
+
+    <string name="nom">Name :</string>
+    <string name="prenom">Firstname :</string>
+    <string name="age">Age :</string>
+    <string name="domaine_de_comptance">Expertise Aera :</string>
+    <string name="téléphone">Phone Number :</string>
+    <string name="validateButton">Submit</string>
+    <string name="backButton">Back</string>
+    <string name="insérez_votre_nom">Please enter your name</string>
+    <string name="insérez_votre_prénom">Please enter your lastname</string>
+    <string name="insérez_votre_age">Please enter your age</string>
+    <string name="insérez_votre_domaine_de_compétance">Please enter your expertise aera</string>
+    <string name="insérez_votre_numéro_de_téléphone">Please enter your phone number</string>
+    <string name="confirmationUserInfoMsg">Are these informations right ?</string>
+
+    <string name="welcomeMsg">Welcome !</string>
+    <string name="clickMe">Click me !</string>
+    <string name="backMain">Back to beginning !</string>
+</resources>
