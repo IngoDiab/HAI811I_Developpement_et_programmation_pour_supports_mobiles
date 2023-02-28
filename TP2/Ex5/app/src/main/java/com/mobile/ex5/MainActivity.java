@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mLinearAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         if(mLinearAcceleration != null) return;
         Toast.makeText(MainActivity.this, "Application closed : Sensor Linear Acceleration Needed", Toast.LENGTH_SHORT).show();
-        Toast.makeText(MainActivity.this, "Application closed : Back Camera Needed", Toast.LENGTH_SHORT).show();
         finish();
     }
 
