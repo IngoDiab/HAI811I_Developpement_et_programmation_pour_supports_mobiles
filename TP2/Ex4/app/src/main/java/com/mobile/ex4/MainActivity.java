@@ -13,7 +13,7 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity implements SensorEventListener
 {
     private SensorManager mSensorManager;
-    private Sensor mAccelerometer;
+    private Sensor mLinearAcceleration;
     private TextView mAccelerometerText;
     private float mThreshold = 1f;
 
@@ -23,14 +23,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_main);
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mLinearAcceleration = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         mAccelerometerText = (TextView)findViewById(R.id.AccelerometerText);
     }
 
     @Override
     public final void onSensorChanged(SensorEvent event) {
         switch(event.sensor.getType()) {
-            case Sensor.TYPE_ACCELEROMETER:
+            case Sensor.TYPE_LINEAR_ACCELERATION:
                 onAccelerometerChanged(event);
                 break;
         }
@@ -41,14 +41,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         float _yMovement = event.values[1];
 
         boolean _movingOnX =  _xMovement < -mThreshold ||  _xMovement > mThreshold;
-        boolean _movingOnY =  _yMovement < SensorManager.GRAVITY_EARTH-mThreshold ||  _yMovement > SensorManager.GRAVITY_EARTH+mThreshold;
+        boolean _movingOnY =  _yMovement < -mThreshold ||  _yMovement > mThreshold;
 
         String _msg = "";
         if(_movingOnX) _msg +=  _xMovement < -mThreshold ? "Left" :
                                 _xMovement > mThreshold ? "Right" : "";
         if(_movingOnX && _movingOnY) _msg += " & ";
-        if(_movingOnY) _msg +=  _yMovement < SensorManager.GRAVITY_EARTH-mThreshold ? "Down" :
-                                _yMovement > SensorManager.GRAVITY_EARTH+ mThreshold ? "Up" : "";
+        if(_movingOnY) _msg +=  _yMovement < -mThreshold ? "Down" :
+                                _yMovement > mThreshold ? "Up" : "";
         mAccelerometerText.setText(_msg);
     }
 
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onResume() {
         super.onResume();
-        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mLinearAcceleration, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
