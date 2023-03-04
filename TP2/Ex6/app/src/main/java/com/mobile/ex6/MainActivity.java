@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         } catch(NumberFormatException e) {}
 
         try {
-        _maxDistance = Integer.parseInt(mProxMax.getText().toString());
+            _maxDistance = Integer.parseInt(mProxMax.getText().toString());
         } catch(NumberFormatException e) {}
 
         if(_distance <= _minDistance) mProxFeedback.setImageResource(R.mipmap.ic_closeprox_foreground);

@@ -25,20 +25,14 @@ public class MainActivity extends AppCompatActivity {
         listeCapteurString = findViewById(R.id.capteurString);
         listeCapteur = sensorManager.getSensorList(Sensor.TYPE_ALL);
 
-        if (sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE) != null) {
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE) != null)
+            listeCapteurString.setText(listeCapteurString.getText() + " -> SUCCESS !\n");
+        else
+            listeCapteurString.setText(listeCapteurString.getText() + " En raison de l'indisponibilté du capteur TYPE_HEART_RATE, l'application SANTÉ ne peut pas fonctionner !\n");
 
-            listeCapteurString.setText(listeCapteurString.getText() + "SUCCESS !\n");
-        } else {
-            listeCapteurString.setText(listeCapteurString.getText() + " EN raison de de l'indisponibilté du capteur TYPE_HEART_RATE L'application SANTÉ ne pas fontionner !\n");
-        }
-        for (Sensor sensor : listeCapteur) {
-
-            if (sensorManager.getDefaultSensor(Sensor.TYPE_ALL) != null) {
-
-                listeCapteurString.setText(listeCapteurString.getText() +" NAME : "  + sensor.getName()+"SUCCESS !\n");
-
-            }
-        }
+        for (Sensor sensor : listeCapteur)
+            if (sensorManager.getDefaultSensor(Sensor.TYPE_ALL) != null)
+                listeCapteurString.setText(listeCapteurString.getText() +" NAME : "  + sensor.getName()+" -> SUCCESS !\n");
 
     }
 }
