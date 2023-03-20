@@ -52,9 +52,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         catch(CameraAccessException e) {}
 
-        if(!mBackCameraID.equals("")) return;
-        Toast.makeText(MainActivity.this, "Application closed : Back Camera Needed", Toast.LENGTH_SHORT).show();
-        finish();
+
     }
 
     protected void onShakePhone(SensorEvent event)
