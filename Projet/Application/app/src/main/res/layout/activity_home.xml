@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_background_blurred"
+    tools:context=".Home">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/info_icon" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="-10dp"
+                android:layout_marginTop="-10dp"
+                app:srcCompat="@drawable/reverleaf_logo" />
+
+
+
+        </LinearLayout>
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/homePage"
+            android:name="com.mobile.reverleaf.Home_Fragment"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            tools:layout="@layout/fragment_home" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="bottom">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="fill_parent"
+            android:layout_height="71dp"
+            app:cardBackgroundColor="@color/mainColor">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/homeButton"
+                    android:layout_width="103dp"
+                    android:layout_height="fill_parent"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/home_icon" />
+
+                <ImageButton
+                    android:id="@+id/searchButton"
+                    android:layout_width="103dp"
+                    android:layout_height="fill_parent"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/search_icon" />
+
+                <ImageButton
+                    android:id="@+id/myEventsButton"
+                    android:layout_width="103dp"
+                    android:layout_height="fill_parent"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/my_events_icon" />
+
+                <ImageButton
+                    android:id="@+id/messageButton"
+                    android:layout_width="103dp"
+                    android:layout_height="fill_parent"
+                    android:background="@android:color/transparent"
+                    app:srcCompat="@drawable/message_icon" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

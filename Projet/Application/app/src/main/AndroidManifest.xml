@@ -12,7 +12,19 @@
         android:theme="@style/Theme.Reverleaf"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".Abonnement"
+            android:exported="false" />
+        <activity
+            android:name=".Inscription"
+            android:exported="false" />
+        <activity
+            android:name=".Accueil"
+            android:exported="false" />
+        <activity
+            android:name=".Connexion"
+            android:exported="false" />
+        <activity
+            android:name=".Home"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,6 +32,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>
