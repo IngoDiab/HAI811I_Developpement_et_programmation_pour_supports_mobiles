@@ -83,7 +83,7 @@
                     app:srcCompat="@drawable/my_events_icon" />
 
                 <ImageButton
-                    android:id="@+id/messageButton"
+                    android:id="@+id/groupsButton"
                     android:layout_width="103dp"
                     android:layout_height="fill_parent"
                     android:background="@android:color/transparent"

@@ -34,43 +34,125 @@
         </LinearLayout>
 
         <HorizontalScrollView
-            android:id="@+id/inscription_list"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/inscription_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
-                <ImageButton
-                    android:id="@+id/eventTest"
-                    android:layout_width="120dp"
-                    android:layout_height="100dp"
-                    android:background="@android:color/transparent"
-                    app:cardCornerRadius="3dp"
-                    app:cardElevation="4dp"
-                    app:srcCompat="@drawable/short_sport" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                    <LinearLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
+                    <ImageButton
+                        android:id="@+id/eventTest"
+                        android:layout_width="120dp"
+                        android:layout_height="100dp"
+                        android:background="@android:color/transparent"
+                        app:cardCornerRadius="3dp"
+                        app:cardElevation="4dp"
+                        app:srcCompat="@drawable/short_sport" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:paddingLeft="5dp"
-                            android:text="Test sport"
-                            android:textColor="#FFFFFF"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingLeft="5dp"
+                        android:text="Test sport"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
-                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/eventTest"
+                        android:layout_width="120dp"
+                        android:layout_height="100dp"
+                        android:background="@android:color/transparent"
+                        app:cardCornerRadius="3dp"
+                        app:cardElevation="4dp"
+                        app:srcCompat="@drawable/short_sport" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingLeft="5dp"
+                        android:text="Test sport"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/eventTest"
+                        android:layout_width="120dp"
+                        android:layout_height="100dp"
+                        android:background="@android:color/transparent"
+                        app:cardCornerRadius="3dp"
+                        app:cardElevation="4dp"
+                        app:srcCompat="@drawable/short_sport" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingLeft="5dp"
+                        android:text="Test sport"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginRight="20dp"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/eventTest"
+                        android:layout_width="120dp"
+                        android:layout_height="100dp"
+                        android:background="@android:color/transparent"
+                        app:cardCornerRadius="3dp"
+                        app:cardElevation="4dp"
+                        app:srcCompat="@drawable/short_sport" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingLeft="5dp"
+                        android:text="Test sport"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -101,31 +183,139 @@
         </LinearLayout>
 
         <HorizontalScrollView
-            android:id="@+id/favoris_list"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/favoris_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical">
-
-                <ImageButton
-                    android:layout_width="120dp"
-                    android:layout_height="100dp"
-                    android:background="@android:color/transparent"
-                    app:cardCornerRadius="3dp"
-                    app:cardElevation="4dp"
-                    app:srcCompat="@drawable/short_concert" />
+                android:layout_marginTop="10dp">
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="20dp"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:layout_width="120dp"
+                        android:layout_height="100dp"
+                        android:background="@android:color/transparent"
+                        app:cardCornerRadius="3dp"
+                        app:cardElevation="4dp"
+                        app:srcCompat="@drawable/short_concert" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="5dp"
+                        android:text="Test concert"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="10dp"
+                        android:text="9.99€"
+                        android:textAlignment="center"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp"
+                        android:textStyle="bold|italic" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:layout_width="120dp"
+                        android:layout_height="100dp"
+                        android:background="@android:color/transparent"
+                        app:cardCornerRadius="3dp"
+                        app:cardElevation="4dp"
+                        app:srcCompat="@drawable/short_concert" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="5dp"
+                        android:text="Test concert"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="10dp"
+                        android:text="9.99€"
+                        android:textAlignment="center"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp"
+                        android:textStyle="bold|italic" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:layout_width="120dp"
+                        android:layout_height="100dp"
+                        android:background="@android:color/transparent"
+                        app:cardCornerRadius="3dp"
+                        app:cardElevation="4dp"
+                        app:srcCompat="@drawable/short_concert" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="5dp"
+                        android:text="Test concert"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="10dp"
+                        android:text="9.99€"
+                        android:textAlignment="center"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp"
+                        android:textStyle="bold|italic" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:layout_width="120dp"
+                        android:layout_height="100dp"
+                        android:background="@android:color/transparent"
+                        app:cardCornerRadius="3dp"
+                        app:cardElevation="4dp"
+                        app:srcCompat="@drawable/short_concert" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -135,6 +325,16 @@
                         android:textColor="#FFFFFF"
                         android:textSize="18sp"
                         android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="10dp"
+                        android:text="9.99€"
+                        android:textAlignment="center"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp"
+                        android:textStyle="bold|italic" />
 
                 </LinearLayout>
 
@@ -165,10 +365,19 @@
         </LinearLayout>
 
         <HorizontalScrollView
-            android:id="@+id/proximity_list"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/proximity_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+            </LinearLayout>
 
         </HorizontalScrollView>
 
@@ -187,18 +396,27 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:fontFamily="@font/open_sans_bold"
                 android:text="Évènements tendances"
-                android:layout_gravity="center"
                 android:textColor="#FFFFFF" />
 
         </LinearLayout>
 
         <HorizontalScrollView
-            android:id="@+id/tendance_list"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/tendance_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+            </LinearLayout>
 
         </HorizontalScrollView>
 
