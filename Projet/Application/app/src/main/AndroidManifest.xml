@@ -15,16 +15,16 @@
             android:name=".Abonnement"
             android:exported="false" />
         <activity
-            android:name=".Inscription"
+            android:name=".Home"
             android:exported="false" />
         <activity
-            android:name=".Accueil"
+            android:name=".Inscription"
             android:exported="false" />
         <activity
             android:name=".Connexion"
             android:exported="false" />
         <activity
-            android:name=".Home"
+            android:name=".Accueil"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

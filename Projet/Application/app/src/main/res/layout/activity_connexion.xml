@@ -25,7 +25,7 @@
                 app:srcCompat="@drawable/back_icon" />
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/backButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="-20dp"
@@ -51,14 +51,14 @@
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="217dp"
+                android:layout_height="250dp"
                 app:cardBackgroundColor="@color/cardBoard"
                 app:cardCornerRadius="3dp"
                 app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="217dp"
+                    android:layout_height="239dp"
                     android:orientation="vertical">
 
                     <androidx.cardview.widget.CardView
@@ -113,6 +113,28 @@
                         android:buttonTint="@color/mainColor"
                         android:text="Rester connecté"
                         android:textColor="@color/mainColor" />
+
+                    <LinearLayout
+                        android:id="@+id/connexionErrorLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="match_parent"
+                            app:srcCompat="@drawable/error_icon" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="L'adresse mail et/ou le mot de passe est incorrect"
+                            android:textAlignment="center"
+                            android:textColor="@color/errorColor"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"

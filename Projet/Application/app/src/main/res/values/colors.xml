@@ -12,4 +12,5 @@
     <color name="secondColor">#9C38D1</color>
     <color name="grayColor">#ADB5BD</color>
     <color name="cardBoard">#F4F5F7</color>
+    <color name="errorColor">#F43535</color>
 </resources>
