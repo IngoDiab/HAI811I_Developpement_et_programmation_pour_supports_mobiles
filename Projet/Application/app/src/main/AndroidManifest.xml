@@ -12,6 +12,9 @@
         android:theme="@style/Theme.Reverleaf"
         tools:targetApi="31">
         <activity
+            android:name=".PopUp_Abonnements"
+            android:exported="false" />
+        <activity
             android:name=".Abonnement"
             android:exported="false" />
         <activity

@@ -42,168 +42,21 @@
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/reverleaf_logo" />
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/sub_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/abo_bronze"
-                    android:layout_width="215dp"
-                    android:layout_height="125dp"
-                    android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/abo_bronze" />
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:cardBackgroundColor="@color/cardBoard"
-                    android:backgroundTint="@color/mainColor"
-                    android:layout_marginTop="-10dp"
-                    app:cardCornerRadius="3dp"
-                    app:cardElevation="4dp">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Classique"
-                            android:paddingLeft="5dp"
-                            android:textColor="#FFFFFF"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="9.99€"
-                        android:paddingRight="10dp"
-                        android:textAlignment="viewEnd"
-                        android:textColor="#FFFFFF"
-                        android:textSize="18sp"
-                        android:textStyle="bold|italic" />
-
-                </androidx.cardview.widget.CardView>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical">
-
-                <ImageButton
-                    android:id="@+id/abo_silver"
-                    android:layout_width="215dp"
-                    android:layout_height="125dp"
-                    android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/abo_silver" />
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="-10dp"
-                    android:backgroundTint="@color/mainColor"
-                    app:cardBackgroundColor="@color/cardBoard"
-                    app:cardCornerRadius="3dp"
-                    app:cardElevation="4dp">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Plus"
-                            android:paddingLeft="5dp"
-                            android:textColor="#FFFFFF"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="19.99€"
-                        android:textAlignment="viewEnd"
-                        android:paddingRight="10dp"
-                        android:textColor="#FFFFFF"
-                        android:textSize="18sp"
-                        android:textStyle="bold|italic" />
-
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical">
-
-                <ImageButton
-                    android:id="@+id/abo_gold"
-                    android:layout_width="215dp"
-                    android:layout_height="125dp"
-                    android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/abo_gold" />
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="-10dp"
-                    android:backgroundTint="@color/mainColor"
-                    app:cardBackgroundColor="@color/cardBoard"
-                    app:cardCornerRadius="3dp"
-                    app:cardElevation="4dp">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingLeft="5dp"
-                            android:text="Premium"
-                            android:textColor="#FFFFFF"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="29.99€"
-                        android:textAlignment="viewEnd"
-                        android:textColor="#FFFFFF"
-                        android:textSize="18sp"
-                        android:paddingRight="10dp"
-                        android:textStyle="bold|italic" />
-
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
-
-        </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
 

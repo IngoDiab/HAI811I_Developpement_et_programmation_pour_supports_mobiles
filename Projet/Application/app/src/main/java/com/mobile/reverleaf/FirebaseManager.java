@@ -13,9 +13,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class FirebaseManager {
@@ -23,6 +27,7 @@ public class FirebaseManager {
     private static FirebaseAuth mAuthDatabase = FirebaseAuth.getInstance();
     private static FirebaseDatabase mRootDatabase = FirebaseDatabase.getInstance("https://reverleafdb-default-rtdb.europe-west1.firebasedatabase.app");
     private static DatabaseReference mUserReference = mRootDatabase.getReference("Users");
+    private static DatabaseReference mSubsReference = mRootDatabase.getReference("Subscription");
 
     public static void GetCurrentUserData(Consumer<UserData> _userDataCallback)
     {
@@ -40,6 +45,32 @@ public class FirebaseManager {
                 _userDataCallback.accept(_userData);
             }
         });
+    }
+
+    public static void GetSubscriptionsData(Consumer<List<AbonnementData>> _subDataCallback) {
+        FirebaseUser _currentUser = mAuthDatabase.getCurrentUser();
+        if (_currentUser == null) {
+            _subDataCallback.accept(new ArrayList<>());
+            return;
+        }
+
+        mSubsReference.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        List<AbonnementData> _subsDatas = new ArrayList<>();
+                        for (DataSnapshot dsp : snapshot.getChildren()) {
+                            _subsDatas.add(dsp.getValue(AbonnementData.class));
+                        }
+                        _subDataCallback.accept(_subsDatas);
+                    }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    }
+        );
     }
 
     public static void RegisterUser(Activity _activity, UserData _newUser, Consumer<Task<AuthResult>> _successCallback, Consumer<Task<AuthResult>> _failCallback)
