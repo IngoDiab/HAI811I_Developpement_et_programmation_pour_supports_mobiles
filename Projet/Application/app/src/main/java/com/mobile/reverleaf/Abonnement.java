@@ -71,7 +71,7 @@ public class Abonnement extends AppCompatActivity {
         Dialog _popup = ViewHelper.OpenPopUp(this, R.layout.activity_pop_up_abonnements);
 
         ViewHelper.GetTextView(_popup, R.id.sub_name).setText(_sub.mName);
-        ViewHelper.GetTextView(_popup, R.id.sub_description).setText(_sub.mDescription);
+        ViewHelper.GetTextView(_popup, R.id.sub_description).setText(_sub.mDescription.replace("\\n", "\n"));
         ViewHelper.GetTextView(_popup, R.id.sub_price).setText(String.format("%.02f", _sub.mPrice));
     }
 }
