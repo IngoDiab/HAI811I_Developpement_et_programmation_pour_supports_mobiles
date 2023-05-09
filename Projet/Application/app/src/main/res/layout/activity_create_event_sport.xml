@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/big_sport"
-    tools:context=".Create_Sport">
+    tools:context=".CreateEvent_Sport">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,7 +41,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/reverleaf_logo" />
-
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
         <LinearLayout
             android:layout_width="359dp"
             android:layout_height="wrap_content"
@@ -64,7 +67,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:layout_marginTop="20dp"
                         android:layout_marginRight="20dp"
                         app:cardCornerRadius="3dp"
                         app:cardElevation="4dp">
@@ -75,8 +77,8 @@
                             android:layout_height="38dp"
                             android:background="@null"
                             android:ems="10"
-                            android:hint="Titre"
-                            android:inputType="textEmailAddress"
+                            android:hint="Titre*"
+                            android:inputType="text"
                             android:paddingLeft="20dp"
                             android:textColorHint="@color/grayColor" />
 
@@ -98,8 +100,8 @@
                             android:background="@null"
                             android:ems="10"
                             android:gravity="top"
-                            android:hint="Description"
-                            android:inputType="phone"
+                            android:hint="Description*"
+                            android:inputType="text"
                             android:paddingLeft="20dp"
                             android:paddingTop="10dp"
                             android:textColorHint="@color/grayColor" />
@@ -121,8 +123,8 @@
                             android:layout_height="38dp"
                             android:background="@null"
                             android:ems="10"
-                            android:hint="Lieu"
-                            android:inputType="textPassword"
+                            android:hint="Lieu*"
+                            android:inputType="text"
                             android:paddingLeft="20dp"
                             android:textColorHint="@color/grayColor"
                             android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"/>
@@ -138,14 +140,13 @@
                         app:cardCornerRadius="3dp"
                         app:cardElevation="4dp">
 
-                        <EditText
+                        <TextView
                             android:id="@+id/editDate"
                             android:layout_width="match_parent"
                             android:layout_height="38dp"
                             android:background="@null"
                             android:ems="10"
-                            android:hint="Date"
-                            android:inputType="date"
+                            android:hint="Date*"
                             android:paddingLeft="20dp"
                             android:textColorHint="@color/grayColor" />
 
@@ -167,8 +168,87 @@
                             android:layout_height="38dp"
                             android:background="@null"
                             android:ems="10"
-                            android:hint="Prix"
-                            android:inputType="date"
+                            android:hint="Prix*"
+                            android:inputType="numberDecimal"
+                            android:paddingLeft="20dp"
+                            android:textColorHint="@color/grayColor" />
+
+
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="20dp"
+                        android:paddingTop="10dp"
+                        android:text="* Champs obligatoires"
+                        android:textAlignment="viewStart"
+                        android:textColor="@color/mainColor" />
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="20dp"
+                        app:cardCornerRadius="3dp"
+                        app:cardElevation="4dp">
+
+                        <EditText
+                            android:id="@+id/editSport"
+                            android:layout_width="match_parent"
+                            android:layout_height="38dp"
+                            android:background="@null"
+                            android:ems="10"
+                            android:hint="Sport"
+                            android:inputType="text"
+                            android:paddingLeft="20dp"
+                            android:textColorHint="@color/grayColor" />
+
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="20dp"
+                        app:cardCornerRadius="3dp"
+                        app:cardElevation="4dp">
+
+                        <EditText
+                            android:id="@+id/editChampionnat"
+                            android:layout_width="match_parent"
+                            android:layout_height="38dp"
+                            android:background="@null"
+                            android:ems="10"
+                            android:hint="Championnat"
+                            android:inputType="text"
+                            android:paddingLeft="20dp"
+                            android:textColorHint="@color/grayColor" />
+
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="20dp"
+                        app:cardCornerRadius="3dp"
+                        app:cardElevation="4dp">
+
+                        <EditText
+                            android:id="@+id/editDuree"
+                            android:layout_width="match_parent"
+                            android:layout_height="38dp"
+                            android:background="@null"
+                            android:ems="10"
+                            android:hint="Durée du match"
+                            android:inputType="numberDecimal"
                             android:paddingLeft="20dp"
                             android:textColorHint="@color/grayColor" />
 
@@ -176,7 +256,7 @@
                     </androidx.cardview.widget.CardView>
 
                     <LinearLayout
-                        android:id="@+id/connexionErrorLayout"
+                        android:id="@+id/errorLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
@@ -217,7 +297,7 @@
             </androidx.cardview.widget.CardView>
 
         </LinearLayout>
-
+        </ScrollView>
     </LinearLayout>
 
-</ScrollView>
+</LinearLayout>

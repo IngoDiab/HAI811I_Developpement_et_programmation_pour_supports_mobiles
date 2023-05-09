@@ -57,7 +57,7 @@ public class FirebaseManager {
         });
     }
 
-    public static void ChangeUserDataValue(String _keyValue, String _value)
+    public static <T> void ChangeUserDataValue(String _keyValue, T _value)
     {
         FirebaseUser _currentUser = mAuthDatabase.getCurrentUser();
         if(_currentUser ==  null) return;
@@ -115,6 +115,14 @@ public class FirebaseManager {
                 else _failCallback.accept(_task);
             }
         });
+    }
+
+    public static <T extends EventData> void RegisterEvent(T _eventData)
+    {
+        DatabaseReference _refNewEvent = mEventsReference.child(_eventData.mTypeEvent).push();
+        _refNewEvent.setValue(_eventData);
+
+        ReverleafManager.AddCreatedEventID(_refNewEvent.getKey());
     }
 
     private static void AddUserToDatabase(UserData _newUser)

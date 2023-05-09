@@ -1,5 +1,8 @@
 package com.mobile.reverleaf;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UserData {
 
     public String mID;
@@ -11,7 +14,10 @@ public class UserData {
     public String mAddress;
     public String mSubscription;
 
+    public List<String> mIDCreatedEvents;
+
     public UserData() {
+        mIDCreatedEvents = new ArrayList<>();
         this.mID = "None";
         this.mMail = "None";
         this.mPhone = "None";
@@ -22,24 +28,14 @@ public class UserData {
         this.mSubscription = "None";
     }
 
-    public UserData(String mMail, String mPhone, String mPassword, String mName, String mSurname, String mAddress, String mSubscription) {
-        this.mMail = mMail;
-        this.mPhone = mPhone;
-        this.mPassword = mPassword;
-        this.mName = mName;
-        this.mSurname = mSurname;
-        this.mAddress = mAddress;
-        this.mSubscription = mSubscription;
-    }
-
-    public UserData(String mID, String mMail, String mPhone, String mPassword, String mName, String mSurname, String mAddress, String mSubscription) {
-        this.mID = mID;
-        this.mMail = mMail;
-        this.mPhone = mPhone;
-        this.mPassword = mPassword;
-        this.mName = mName;
-        this.mSurname = mSurname;
-        this.mAddress = mAddress;
-        this.mSubscription = mSubscription;
+    public UserData(String _mail, String _phone, String _password, String _name, String _surname, String _address, String _subscription) {
+        mIDCreatedEvents = new ArrayList<>();
+        this.mMail = _mail;
+        this.mPhone = _phone;
+        this.mPassword = _password;
+        this.mName = _name;
+        this.mSurname = _surname;
+        this.mAddress = _address;
+        this.mSubscription = _subscription;
     }
 }

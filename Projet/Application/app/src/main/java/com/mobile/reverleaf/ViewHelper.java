@@ -1,8 +1,10 @@
 package com.mobile.reverleaf;
 
+import java.util.Calendar;
 import java.util.function.Consumer;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +19,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -91,6 +94,27 @@ public class ViewHelper {
                 .addToBackStack("name")
                 .replace(R.id.homePage, _target, null)
                 .commit();
+    }
+
+    public static void OpenCalendar(Context _context, Consumer<String> _onDateChosen)
+    {
+        DatePickerDialog.OnDateSetListener _dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                month+=1;
+                String _date = (dayOfMonth<=9 ? "0" : "")+dayOfMonth+(month<=9 ? "/0" : "/")+month+'/'+year;
+                _onDateChosen.accept(_date);
+            }
+        };
+
+        Calendar _calendar = Calendar.getInstance();
+        int _year = _calendar.get(Calendar.YEAR);
+        int _month = _calendar.get(Calendar.MONTH);
+        int _day = _calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog _picker = new DatePickerDialog(_context, android.R.style.Theme_Holo_Light_Dialog_MinWidth, _dateSetListener, _year, _month, _day);
+        _picker.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        _picker.show();
     }
 
     public static Dialog OpenPopUp(Context _context, int _idLayoutPopUp)

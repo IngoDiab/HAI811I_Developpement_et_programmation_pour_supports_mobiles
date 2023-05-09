@@ -17,7 +17,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDJcAmHkXXV3x3JRHSpp-XJV4BCJW75-jw"></meta-data>
         <activity
-            android:name=".Create_Sport"
+            android:name=".CreateEvent_Sport"
             android:exported="false" />
         <activity
             android:name=".PopUp_Abonnements"
