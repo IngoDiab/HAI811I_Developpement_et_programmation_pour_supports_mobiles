@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,49 +29,77 @@ public class FirebaseManager {
     private static FirebaseDatabase mRootDatabase = FirebaseDatabase.getInstance("https://reverleafdb-default-rtdb.europe-west1.firebasedatabase.app");
     private static DatabaseReference mUserReference = mRootDatabase.getReference("Users");
     private static DatabaseReference mSubsReference = mRootDatabase.getReference("Subscription");
+    private static DatabaseReference mEventsReference = mRootDatabase.getReference("Event");
+    private static DatabaseReference mCategoriesReference = mRootDatabase.getReference("Category");
 
-    public static void GetCurrentUserData(Consumer<UserData> _userDataCallback)
+    public static void LoadCurrentUserData(@Nullable Consumer<UserData> _onUserLoaded, @Nullable Consumer<AbonnementData> _onSubLoaded)
     {
         FirebaseUser _currentUser = mAuthDatabase.getCurrentUser();
-        if(_currentUser ==  null)
-        {
-            _userDataCallback.accept(new UserData());
-            return;
-        }
+        if(_currentUser ==  null) return;
 
         mUserReference.child(_currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 UserData _userData = task.getResult().getValue(UserData.class);
-                _userDataCallback.accept(_userData);
+                ReverleafManager.mCurrentUserData = _userData;
+                if(_onUserLoaded != null) _onUserLoaded.accept(_userData);
+
+                //mSubsReference.child(_userData.mSubscription).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    //@Override
+                    //public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        //AbonnementData _userSub = task.getResult().getValue(AbonnementData.class);
+                        //ReverleafManager.mSubscription = _userSub;
+                        //if(_onSubLoaded != null) _onSubLoaded.accept(_userSub);
+                    //}
+               //});
+
             }
         });
     }
 
-    public static void GetSubscriptionsData(Consumer<List<AbonnementData>> _subDataCallback) {
+    public static void ChangeUserDataValue(String _keyValue, String _value)
+    {
         FirebaseUser _currentUser = mAuthDatabase.getCurrentUser();
-        if (_currentUser == null) {
-            _subDataCallback.accept(new ArrayList<>());
-            return;
-        }
+        if(_currentUser ==  null) return;
+        mUserReference.child(_currentUser.getUid()).child(_keyValue).setValue(_value);
+    }
 
-        mSubsReference.addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        List<AbonnementData> _subsDatas = new ArrayList<>();
-                        for (DataSnapshot dsp : snapshot.getChildren()) {
-                            _subsDatas.add(dsp.getValue(AbonnementData.class));
-                        }
-                        _subDataCallback.accept(_subsDatas);
-                    }
+    public static void GetSubscriptionsData(Consumer<List<AbonnementData>> _subDataCallback)
+    {
+        ValueEventListener _listener = new ValueEventListener(){
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<AbonnementData> _subsDatas = new ArrayList<>();
+                for (DataSnapshot dsp : snapshot.getChildren()) {
+                    _subsDatas.add(dsp.getValue(AbonnementData.class));
+                }
+                _subDataCallback.accept(_subsDatas);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+            }
+        };
+        mSubsReference.addListenerForSingleValueEvent(_listener);
+    }
 
-                        }
-                    }
-        );
+    public static void GetCategoriesAvailable(Consumer<List<CategoryData>> _categCallback)
+    {
+        ValueEventListener _listener = new ValueEventListener(){
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<CategoryData> _categories = new ArrayList<>();
+                for (DataSnapshot dsp : snapshot.getChildren()) {
+                    _categories.add(dsp.getValue(CategoryData.class));
+                }
+                _categCallback.accept(_categories);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        mCategoriesReference.addListenerForSingleValueEvent(_listener);
     }
 
     public static void RegisterUser(Activity _activity, UserData _newUser, Consumer<Task<AuthResult>> _successCallback, Consumer<Task<AuthResult>> _failCallback)

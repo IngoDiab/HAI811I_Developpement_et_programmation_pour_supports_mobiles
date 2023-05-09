@@ -12,6 +12,7 @@ public class UserData {
     public String mSubscription;
 
     public UserData() {
+        this.mID = "None";
         this.mMail = "None";
         this.mPhone = "None";
         this.mPassword = "None";

@@ -7,8 +7,11 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 public class MyEvents_Fragment extends Fragment {
+
+    Button mCreateEventButton;
 
     public MyEvents_Fragment() {
         // Required empty public constructor
@@ -21,6 +24,12 @@ public class MyEvents_Fragment extends Fragment {
         return fragment;
     }
 
+    public void InitializeButtons(View _viewFragment)
+    {
+        mCreateEventButton = ViewHelper.GetViewElement(_viewFragment, R.id.createEventButton);
+        ViewHelper.BindOnClick(mCreateEventButton, _view->ViewHelper.SwitchFragment(getParentFragmentManager(), Categories_Fragment.class));
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +38,10 @@ public class MyEvents_Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_myevents, container, false);
+
+        View _view = inflater.inflate(R.layout.fragment_myevents, container, false);
+        InitializeButtons(_view);
+
+        return _view;
     }
 }

@@ -13,6 +13,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -20,15 +21,22 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
+import com.paypal.checkout.order.CaptureOrderResult;
+import com.paypal.checkout.paymentbutton.PaymentButtonContainer;
 
 public class ViewHelper {
 
-    public static LinearLayout GetLinearLayout(Activity _activity, int _id)
+    public static void PrintToast(Context _context, String _message)
     {
-        return (LinearLayout) _activity.findViewById(_id);
+        Toast.makeText(_context, _message, Toast.LENGTH_SHORT).show();
     }
 
     public static void WriteInTextView(TextView _textView, String _toWrite)
@@ -36,33 +44,29 @@ public class ViewHelper {
         _textView.setText(_toWrite);
     }
 
-    public static EditText GetEditText(Activity _activity, int _id)
-    {
-        return (EditText) _activity.findViewById(_id);
-    }
-
-    public static TextView GetTextView(Activity _activity, int _id)
-    {
-        return (TextView) _activity.findViewById(_id);
-    }
     public static TextView GetTextView(Dialog _dialog, int _id)
     {
         return (TextView) _dialog.findViewById(_id);
     }
 
-    public static Button GetButton(Activity _activity, int _id)
+    public static <T> T GetViewElement(Activity _activity, int _id)
     {
-        return (Button) _activity.findViewById(_id);
+        return (T) _activity.findViewById(_id);
     }
 
-    public static ImageButton GetImageButton(Activity _activity, int _id)
+    public static <T> T GetFragmentElement(FragmentManager _fragManager, int _id)
     {
-        return (ImageButton) _activity.findViewById(_id);
+        return (T) _fragManager.findFragmentById(_id);
     }
 
-    public static CheckBox GetCheckBox(Activity _activity, int _id)
+    public static <T> T GetViewElement(View _view, int _id)
     {
-        return (CheckBox) _activity.findViewById(_id);
+        return (T) _view.findViewById(_id);
+    }
+
+    public static <T> T GetViewElement(Window _window, int _id)
+    {
+        return (T) _window.findViewById(_id);
     }
 
     public static void BindOnClick(View _view, Consumer<View> _callback) {
@@ -78,6 +82,15 @@ public class ViewHelper {
     {
         Intent _intent = new Intent(_activity, _class);
         _activity.startActivity(_intent);
+        _activity.finish();
+    }
+
+    public static void SwitchFragment(FragmentManager _fragManager, Class _target)
+    {
+        _fragManager.beginTransaction()
+                .addToBackStack("name")
+                .replace(R.id.homePage, _target, null)
+                .commit();
     }
 
     public static Dialog OpenPopUp(Context _context, int _idLayoutPopUp)
@@ -95,10 +108,21 @@ public class ViewHelper {
 
         return _popup;
     }
-    
-    public static LinearLayout CreateCard(Context _context, String _nameCard, float _priceCard, Consumer<View> _callback)
+
+    public static Dialog OpenSubscriptionPopUp(Context _context, int _idLayoutPopUp, float _subPrice, Consumer<CaptureOrderResult> _onPaypalPaid)
+    {
+        Dialog _subscriptionPopUp = OpenPopUp(_context, _idLayoutPopUp);
+        PaymentButtonContainer _paypalButton = GetViewElement(_subscriptionPopUp.getWindow(), R.id.payment_button_container);
+        _paypalButton.setup(PaypalManager.CreatePaymentOrder(_subPrice), PaypalManager.CreateApprovalFeedback(_onPaypalPaid));
+
+        return _subscriptionPopUp;
+    }
+
+    public static LinearLayout CreateCard(Context _context, boolean _isMiniCard, String _nameCard, @Nullable Float _priceCard, Consumer<View> _clickCallback)
     {
         int _margin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, _context.getResources().getDisplayMetrics());
+        int _height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, _isMiniCard ? 100 : 160, _context.getResources().getDisplayMetrics());
+        int _width = _isMiniCard ? (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, _context.getResources().getDisplayMetrics()) : LinearLayout.LayoutParams.MATCH_PARENT;
 
         //Layout
         LinearLayout _layoutCard = new LinearLayout(_context);
@@ -110,9 +134,8 @@ public class ViewHelper {
 
         //ImageButton
         ImageButton _imageButton = new ImageButton(_context);
-        BindOnClick(_imageButton, _callback);
-        int _height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 125, _context.getResources().getDisplayMetrics());
-        _imageButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, _height));
+        BindOnClick(_imageButton, _clickCallback);
+        _imageButton.setLayoutParams(new LinearLayout.LayoutParams(_width, _height));
         _imageButton.setBackgroundColor(Color.TRANSPARENT);
         _imageButton.setImageDrawable(ContextCompat.getDrawable(_context, R.drawable.abo_bronze));
         _layoutCard.addView(_imageButton);
@@ -132,6 +155,7 @@ public class ViewHelper {
         TextView _name = new TextView(_context);
         _name.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
         _name.setText(_nameCard);
+        if(_priceCard == null) _name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         _name.setPadding(_margin/2,0,0,0);
         _name.setTextColor(ContextCompat.getColor(_context, R.color.white));
         _name.setTextSize(18);
@@ -139,6 +163,7 @@ public class ViewHelper {
         _cardView.addView(_name);
 
         //Price
+        if(_priceCard == null) return _layoutCard;
         TextView _price = new TextView(_context);
         _price.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
         _price.setText(String.format("%.02f", _priceCard)+"€");

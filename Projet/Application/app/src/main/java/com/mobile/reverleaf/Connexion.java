@@ -35,28 +35,28 @@ public class Connexion extends AppCompatActivity {
 
     public void InitializeLayout()
     {
-        mErrorLayout = ViewHelper.GetLinearLayout(this, R.id.connexionErrorLayout);
+        mErrorLayout = ViewHelper.GetViewElement(this, R.id.connexionErrorLayout);
         mErrorLayout.setVisibility(View.GONE);
     }
 
     public void InitializeButtons()
     {
-        mConnexionButton = ViewHelper.GetButton(this, R.id.connexionButton);
+        mConnexionButton = ViewHelper.GetViewElement(this, R.id.connexionButton);
         ViewHelper.BindOnClick(mConnexionButton, (_view)->ConnectUser(_view));
 
-        mBackButton = ViewHelper.GetButton(this, R.id.backButton);
+        mBackButton = ViewHelper.GetViewElement(this, R.id.backButton);
         ViewHelper.BindOnClick(mBackButton, (_view)->ViewHelper.StartNewIntent(this, Accueil.class));
     }
 
     public void InitializeEditTexts()
     {
-        mEmailEdit = ViewHelper.GetEditText(this, R.id.editEmailAddress);
-        mPasswordEdit = ViewHelper.GetEditText(this, R.id.editPassword);
+        mEmailEdit = ViewHelper.GetViewElement(this, R.id.editEmailAddress);
+        mPasswordEdit = ViewHelper.GetViewElement(this, R.id.editPassword);
     }
 
     public void InitializeCheckbox()
     {
-        mCheckboxRemainConnected = ViewHelper.GetCheckBox(this, R.id.checkBoxRemainConnected);
+        mCheckboxRemainConnected = ViewHelper.GetViewElement(this, R.id.checkBoxRemainConnected);
     }
 
     public void ConnectUser(View _view)
@@ -80,7 +80,16 @@ public class Connexion extends AppCompatActivity {
 
     public void OnSuccessConnexion()
     {
-        ViewHelper.StartNewIntent(this, Abonnement.class);
+        Consumer<UserData> _onUserLoaded = _user -> LoadAbonnementOrHub(_user);
+        FirebaseManager.LoadCurrentUserData(_onUserLoaded,null);
+    }
+
+    public void LoadAbonnementOrHub(UserData _user)
+    {
+        if(_user.mSubscription.equals("None"))
+            ViewHelper.StartNewIntent(this, Abonnement.class);
+        else
+            ViewHelper.StartNewIntent(this, Home.class);
     }
 
     public void OnFailedConnexion()

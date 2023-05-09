@@ -39,38 +39,38 @@ public class Inscription extends AppCompatActivity {
 
     public void InitializeLayout()
     {
-        mErrorLayout = ViewHelper.GetLinearLayout(this, R.id.connexionErrorLayout);
+        mErrorLayout = ViewHelper.GetViewElement(this, R.id.connexionErrorLayout);
         mErrorLayout.setVisibility(View.GONE);
     }
 
     public void InitializeButtons()
     {
-        mInscriptionButton = ViewHelper.GetButton(this, R.id.inscriptionButton);
+        mInscriptionButton = ViewHelper.GetViewElement(this, R.id.inscriptionButton);
         ViewHelper.BindOnClick(mInscriptionButton, (_view)->RegisterUser(_view));
 
-        mBackButton = ViewHelper.GetButton(this, R.id.backButton);
+        mBackButton = ViewHelper.GetViewElement(this, R.id.backButton);
         ViewHelper.BindOnClick(mBackButton, (_view)->ViewHelper.StartNewIntent(this, Accueil.class));
     }
 
     public void InitializeEditTexts()
     {
-        mEmailEdit = ViewHelper.GetEditText(this, R.id.editEmailAddress);
-        mPhoneEdit = ViewHelper.GetEditText(this, R.id.editTelephone);
-        mPasswordEdit = ViewHelper.GetEditText(this, R.id.editPassword);
-        mConfirmPasswordEdit = ViewHelper.GetEditText(this, R.id.editConfirmPassword);
-        mNameEdit = ViewHelper.GetEditText(this, R.id.editName);
-        mSurnameEdit = ViewHelper.GetEditText(this, R.id.editSurname);
-        mAddressEdit = ViewHelper.GetEditText(this, R.id.editAdress);
+        mEmailEdit = ViewHelper.GetViewElement(this, R.id.editEmailAddress);
+        mPhoneEdit = ViewHelper.GetViewElement(this, R.id.editTelephone);
+        mPasswordEdit = ViewHelper.GetViewElement(this, R.id.editPassword);
+        mConfirmPasswordEdit = ViewHelper.GetViewElement(this, R.id.editConfirmPassword);
+        mNameEdit = ViewHelper.GetViewElement(this, R.id.editName);
+        mSurnameEdit = ViewHelper.GetViewElement(this, R.id.editSurname);
+        mAddressEdit = ViewHelper.GetViewElement(this, R.id.editAdress);
     }
 
     public void InitializeTextViews()
     {
-        mErrorText = ViewHelper.GetTextView(this, R.id.textError);
+        mErrorText = ViewHelper.GetViewElement(this, R.id.textError);
     }
 
     public void InitializeCheckbox()
     {
-        mCheckboxConditions = ViewHelper.GetCheckBox(this, R.id.checkBoxAccept);
+        mCheckboxConditions = ViewHelper.GetViewElement(this, R.id.checkBoxAccept);
     }
 
     public boolean CheckPasswordConfirmed()
@@ -129,7 +129,7 @@ public class Inscription extends AppCompatActivity {
 
     public void OnSuccessInscription()
     {
-        ViewHelper.StartNewIntent(this, Abonnement.class);
+        FirebaseManager.LoadCurrentUserData(_userData->ViewHelper.StartNewIntent(this, Abonnement.class), null);
     }
 
     public void OnFailedInscription()
