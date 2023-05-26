@@ -15,9 +15,13 @@ public class UserData {
     public String mSubscription;
 
     public List<String> mIDCreatedEvents;
+    public List<String> mIDInscritEvents;
+    public List<String> mIDFavorisEvents;
 
     public UserData() {
         mIDCreatedEvents = new ArrayList<>();
+        mIDInscritEvents = new ArrayList<>();
+        mIDFavorisEvents = new ArrayList<>();
         this.mID = "None";
         this.mMail = "None";
         this.mPhone = "None";
@@ -30,6 +34,8 @@ public class UserData {
 
     public UserData(String _mail, String _phone, String _password, String _name, String _surname, String _address, String _subscription) {
         mIDCreatedEvents = new ArrayList<>();
+        mIDInscritEvents = new ArrayList<>();
+        mIDFavorisEvents = new ArrayList<>();
         this.mMail = _mail;
         this.mPhone = _phone;
         this.mPassword = _password;

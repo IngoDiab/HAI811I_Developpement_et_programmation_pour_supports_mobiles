@@ -36,7 +36,7 @@ public class CreateEvent_Sport extends CreateEvent {
         String _title = mTitle.getText().toString();
         String _desc = mDesc.getText().toString();
         String _date = mDate.getText().toString();
-        String _price = mPrice.getText().toString();
+        float _price = Float.parseFloat(mPrice.getText().toString());
         String _sportName = mSportName.getText().toString();
         String _championnat = mChampionnat.getText().toString();
         String _duree = mDuree.getText().toString();

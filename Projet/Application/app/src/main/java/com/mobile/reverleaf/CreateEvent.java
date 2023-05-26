@@ -27,7 +27,7 @@ public abstract class CreateEvent extends AppCompatActivity {
     protected String mChosenLieu = "";
     LinearLayout mErrorLayout;
     TextView mDate, mErrorText;
-    protected Button mCreate;
+    protected Button mCreate, mBackButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +48,8 @@ public abstract class CreateEvent extends AppCompatActivity {
         InitializeFragmentAutoCompletion();
 
         ViewHelper.BindOnClick(mCreate, _view->RegisterCreatedEvent());
-        ViewHelper.BindOnClick(mDate, _view -> ViewHelper.OpenCalendar(this, _date -> mDate.setText(_date)));
+        ViewHelper.BindOnClick(mDate, _view->ViewHelper.OpenCalendar(this, _date -> mDate.setText(_date)));
+        ViewHelper.BindOnClick(mBackButton, _view->ViewHelper.StartNewIntent(this, Home.class));
     }
 
     public void InitializeLayout()
@@ -65,6 +66,7 @@ public abstract class CreateEvent extends AppCompatActivity {
 
     protected void InitializeButton()
     {
+        mBackButton = ViewHelper.GetViewElement(this, R.id.backButton);
         mCreate = ViewHelper.GetViewElement(this, R.id.createButton);
     }
 

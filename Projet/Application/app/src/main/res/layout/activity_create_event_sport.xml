@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/big_sport"
+    android:layout_alignParentBottom="true"
     tools:context=".CreateEvent_Sport">
 
     <LinearLayout
@@ -41,10 +42,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/reverleaf_logo" />
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:fillViewport="true">
         <LinearLayout
             android:layout_width="359dp"
             android:layout_height="wrap_content"
@@ -76,6 +79,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="38dp"
                             android:background="@null"
+                            android:gravity="center_vertical"
                             android:ems="10"
                             android:hint="Titre*"
                             android:inputType="text"
@@ -122,6 +126,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="38dp"
                             android:background="@null"
+                            android:gravity="center_vertical"
                             android:ems="10"
                             android:hint="Lieu*"
                             android:inputType="text"
@@ -145,6 +150,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="38dp"
                             android:background="@null"
+                            android:gravity="center_vertical"
                             android:ems="10"
                             android:hint="Date*"
                             android:paddingLeft="20dp"
@@ -167,6 +173,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="38dp"
                             android:background="@null"
+                            android:gravity="center_vertical"
                             android:ems="10"
                             android:hint="Prix*"
                             android:inputType="numberDecimal"
@@ -200,6 +207,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="38dp"
                             android:background="@null"
+                            android:gravity="center_vertical"
                             android:ems="10"
                             android:hint="Sport"
                             android:inputType="text"
@@ -223,6 +231,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="38dp"
                             android:background="@null"
+                            android:gravity="center_vertical"
                             android:ems="10"
                             android:hint="Championnat"
                             android:inputType="text"
@@ -246,6 +255,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="38dp"
                             android:background="@null"
+                            android:gravity="center_vertical"
                             android:ems="10"
                             android:hint="Durée du match"
                             android:inputType="numberDecimal"

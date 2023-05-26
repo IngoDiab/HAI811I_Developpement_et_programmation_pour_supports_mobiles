@@ -1,11 +1,15 @@
 package com.mobile.reverleaf;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -17,9 +21,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -41,20 +49,189 @@ public class FirebaseManager {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 UserData _userData = task.getResult().getValue(UserData.class);
-                ReverleafManager.mCurrentUserData = _userData;
                 if(_onUserLoaded != null) _onUserLoaded.accept(_userData);
-
-                //mSubsReference.child(_userData.mSubscription).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                    //@Override
-                    //public void onComplete(@NonNull Task<DataSnapshot> task) {
-                        //AbonnementData _userSub = task.getResult().getValue(AbonnementData.class);
-                        //ReverleafManager.mSubscription = _userSub;
-                        //if(_onSubLoaded != null) _onSubLoaded.accept(_userSub);
-                    //}
-               //});
-
             }
         });
+    }
+
+    public static <T> void AddToListUserDataValue(boolean _register, String _listID, T _value, Consumer<T> _onElementAdded)
+    {
+        FirebaseUser _currentUser = mAuthDatabase.getCurrentUser();
+        if(_currentUser ==  null) return;
+        ValueEventListener _listener = new ValueEventListener(){
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<T> _ids = new ArrayList<T>();
+                for (DataSnapshot dsp : snapshot.getChildren()) {
+                    _ids.add((T)dsp.getValue());
+                }
+                if(_register) _ids.add(_value);
+                else _ids.remove(_value);
+                mUserReference.child(_currentUser.getUid()).child(_listID).setValue(_ids);
+                if(_onElementAdded!=null) _onElementAdded.accept(_value);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        mUserReference.child(_currentUser.getUid()).child(_listID).addListenerForSingleValueEvent(_listener);
+    }
+
+    public static void LoadCorrespondingEvents(CARD_MOD _mod, Activity _activity, FragmentManager _fragManager, List<String> _tagetIDs, Consumer<List<LinearLayout>> _getCardsCallback)
+    {
+        ValueEventListener _listener = new ValueEventListener(){
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<LinearLayout> _cards = new ArrayList<LinearLayout>();
+                for(DataSnapshot _id : snapshot.getChildren()) {
+                    if (!_tagetIDs.contains(_id.getKey())) continue;
+                    try {
+                        //Get class corresponding to Data of this EventType
+                        Class<?> _classEvent = Class.forName("com.mobile.reverleaf.EventData_" + (String) _id.child("mTypeEvent").getValue());
+                        //Load EventData
+                        Object _event = _id.getValue(_classEvent);
+                        String _nameMethod = "";
+                        Class<?>[] _parametersTypes = {};
+                        Object[] _parameters = {};
+
+                        switch(_mod)
+                        {
+                            case MY_EVENTS_CARD:
+                                _nameMethod = "CreateMyEventCard";
+                                _parametersTypes = new Class[]{Activity.class, FragmentManager.class};
+                                _parameters = new Object[]{_activity, _fragManager};
+                                break;
+
+                            case EVENTS_INSCRIPTIONS_CARD:
+                                _nameMethod = "CreateHomeCard";
+                                _parametersTypes = new Class[]{Activity.class, Boolean.class};
+                                _parameters = new Object[]{_activity, false};
+                                break;
+
+                            case EVENTS_TENDANCES_CARD:
+
+                            case EVENTS_PROXIMITY_CARD:
+
+                            case EVENTS_FAVORIS_CARD:
+                                _nameMethod = "CreateHomeCard";
+                                _parametersTypes = new Class[]{Activity.class, Boolean.class};
+                                _parameters = new Object[]{_activity, true};
+                                break;
+
+                            default:
+                                break;
+                        }
+                        //Get method corresponding to CreateCard
+                        Method _createCard = _classEvent.getMethod(_nameMethod, _parametersTypes);
+                        //Create card of this eventData
+                        LinearLayout _card = (LinearLayout) _createCard.invoke(_event, _parameters);
+                        _cards.add(_card);
+                    }
+                    catch (ClassNotFoundException e) {}
+                    catch (NoSuchMethodException e) {}
+                    catch (IllegalAccessException e) {}
+                    catch (InvocationTargetException e) {}
+                }
+                _getCardsCallback.accept(_cards);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        mEventsReference.addListenerForSingleValueEvent(_listener);
+    }
+
+    public static void LoadEventsFromUserList(CARD_MOD _mod, Activity _activity, FragmentManager _fragManager, String _listID, Consumer<List<LinearLayout>> _getCardsCallback)
+    {
+        FirebaseUser _currentUser = mAuthDatabase.getCurrentUser();
+        if(_currentUser ==  null) return;
+        ValueEventListener _listener = new ValueEventListener(){
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<String> _ids = new ArrayList<String>();
+                for (DataSnapshot dsp : snapshot.getChildren()) {
+                    _ids.add((String)dsp.getValue());
+                }
+                LoadCorrespondingEvents(_mod, _activity, _fragManager, _ids, _getCardsCallback);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        mUserReference.child(_currentUser.getUid()).child(_listID).addListenerForSingleValueEvent(_listener);
+    }
+
+    public static void LoadMostInscriptionEvents(CARD_MOD _mod, Activity _activity, FragmentManager _fragManager, int _nbItemsByCategory, Consumer<List<LinearLayout>> _getCardsCallback)
+    {
+        ValueEventListener _listener = new ValueEventListener(){
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<String> _ids = new ArrayList<String>();
+                for (DataSnapshot dsp : snapshot.getChildren()) {
+                    _ids.add((String)dsp.child("mID").getValue());
+                }
+                LoadCorrespondingEvents(_mod, _activity, _fragManager, _ids, _getCardsCallback);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        mEventsReference.orderByChild("mNbInscrits").limitToFirst(_nbItemsByCategory).addListenerForSingleValueEvent(_listener);
+    }
+
+    public static void IsEventInUserList(String _listName, String _idEvent, Consumer<Boolean> _isInListCallback)
+    {
+        FirebaseUser _currentUser = mAuthDatabase.getCurrentUser();
+        if(_currentUser ==  null) return;
+
+        ValueEventListener _listener = new ValueEventListener(){
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dsp : snapshot.getChildren())
+                {
+                    if(dsp.getValue(String.class).equals(_idEvent))
+                    {
+                        _isInListCallback.accept(true);
+                        return;
+                    }
+                }
+                _isInListCallback.accept(false);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        mUserReference.child(_currentUser.getUid()).child(_listName).addListenerForSingleValueEvent(_listener);
+    }
+
+    public static <T extends EventData> void IncrementEventCounter(String _eventID, String _counterKey, int _incrementation)
+    {
+        ValueEventListener _listener = new ValueEventListener(){
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long _nbUsers = (long)snapshot.getValue();
+                mEventsReference.child(_eventID).child(_counterKey).setValue(_nbUsers+_incrementation);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        mEventsReference.child(_eventID).child(_counterKey).addListenerForSingleValueEvent(_listener);
+    }
+
+    public static void ManageInteractionWithEvent(boolean _register, String _eventID, String _listIDUserSide, String _statIDEventSide, Consumer<String> _onElementAdded)
+    {
+        FirebaseUser _currentUser = mAuthDatabase.getCurrentUser();
+        if(_currentUser ==  null) return;
+
+        AddToListUserDataValue(_register, _listIDUserSide, _eventID, _onElementAdded);
+        IncrementEventCounter(_eventID, _statIDEventSide, _register ? 1 : -1);
     }
 
     public static <T> void ChangeUserDataValue(String _keyValue, T _value)
@@ -119,10 +296,36 @@ public class FirebaseManager {
 
     public static <T extends EventData> void RegisterEvent(T _eventData)
     {
-        DatabaseReference _refNewEvent = mEventsReference.child(_eventData.mTypeEvent).push();
+        DatabaseReference _refNewEvent = mEventsReference.push();
+        _eventData.mID = _refNewEvent.getKey();
         _refNewEvent.setValue(_eventData);
+        FirebaseManager.AddToListUserDataValue(true,"mIDCreatedEvents", _eventData.mID, null);
+    }
 
-        ReverleafManager.AddCreatedEventID(_refNewEvent.getKey());
+    public static <T extends EventData> void DeleteEvent(T _eventData)
+    {
+        //Delete from user
+        FirebaseUser _currentUser = mAuthDatabase.getCurrentUser();
+        if(_currentUser ==  null) return;
+        ValueEventListener _listener = new ValueEventListener(){
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<String> _ids = new ArrayList<String>();
+                for (DataSnapshot dsp : snapshot.getChildren()) {
+                    _ids.add((String)dsp.getValue());
+                }
+                _ids.remove(_eventData.mID);
+                mUserReference.child(_currentUser.getUid()).child("mIDCreatedEvents").setValue(_ids);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        mUserReference.child(_currentUser.getUid()).child("mIDCreatedEvents").addListenerForSingleValueEvent(_listener);
+
+        //Delete from events
+        mEventsReference.child(_eventData.mID).removeValue();
     }
 
     private static void AddUserToDatabase(UserData _newUser)

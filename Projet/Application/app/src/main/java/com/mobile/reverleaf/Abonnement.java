@@ -63,7 +63,7 @@ public class Abonnement extends AppCompatActivity {
     {
         for(AbonnementData _subData : _listData)
         {
-            LinearLayout _cardSub = ViewHelper.CreateCard(this, false, _subData.mName, _subData.mPrice, (_view)->OpenPopUpSubscription(_subData));
+            LinearLayout _cardSub = ViewHelper.CreateSubCard(this, _subData.mName, _subData.mPrice, (_view)->OpenPopUpSubscription(_subData));
             mSubsList.addView(_cardSub);
         }
     }
@@ -79,7 +79,7 @@ public class Abonnement extends AppCompatActivity {
 
     public void ApplySubscription(AbonnementData _sub)
     {
-        ReverleafManager.SetSubscription(_sub.mName);
+        FirebaseManager.ChangeUserDataValue("mSubscription", _sub.mName);
         ViewHelper.StartNewIntent(this, Home.class);
     }
 }

@@ -18,6 +18,7 @@ public class Home extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         BindUserBarButtons();
+        BindButtons();
     }
 
     public void BindHomeButton(int _idButton, Class _fragmentTarget)
@@ -33,5 +34,17 @@ public class Home extends AppCompatActivity {
         BindHomeButton(R.id.searchButton, Search_Fragment.class);
         BindHomeButton(R.id.myEventsButton, MyEvents_Fragment.class);
         BindHomeButton(R.id.groupsButton, Group_Fragment.class);
+    }
+
+    public void BindButtons()
+    {
+        ImageButton _button = ViewHelper.GetViewElement(this, R.id.disconnectButton);
+        ViewHelper.BindOnClick(_button, view -> Disconnect());
+    }
+
+    protected void Disconnect()
+    {
+        FirebaseManager.SignOut();
+        ViewHelper.StartNewIntent(this, Accueil.class);
     }
 }

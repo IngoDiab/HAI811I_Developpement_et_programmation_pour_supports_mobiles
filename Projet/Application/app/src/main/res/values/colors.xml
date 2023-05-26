@@ -13,4 +13,5 @@
     <color name="grayColor">#ADB5BD</color>
     <color name="cardBoard">#F4F5F7</color>
     <color name="errorColor">#F43535</color>
+    <color name="clickedColor">#3A6ABA</color>
 </resources>

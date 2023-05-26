@@ -42,7 +42,7 @@ public class Categories_Fragment extends Fragment {
             try
             {
                 Class<?> _classActivity = Class.forName("com.mobile.reverleaf.CreateEvent_"+_category.mName);
-                LinearLayout _cardCategory = ViewHelper.CreateCard(getContext(), false, _category.mName, null, _view->ViewHelper.StartNewIntent(getActivity(), _classActivity));
+                LinearLayout _cardCategory = ViewHelper.CreateCategoryCard(getContext(), _category.mName, _view->ViewHelper.StartNewIntent(getActivity(), _classActivity));
                 mCategoriesList.addView(_cardCategory);
             } catch (ClassNotFoundException e)
             {

@@ -13,11 +13,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Reverleaf"
         tools:targetApi="31">
+        <activity
+            android:name=".ConsultEvent_Sport"
+            android:exported="false" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDJcAmHkXXV3x3JRHSpp-XJV4BCJW75-jw"></meta-data>
+            android:value="AIzaSyDJcAmHkXXV3x3JRHSpp-XJV4BCJW75-jw" />
+
         <activity
             android:name=".CreateEvent_Sport"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name=".PopUp_Abonnements"

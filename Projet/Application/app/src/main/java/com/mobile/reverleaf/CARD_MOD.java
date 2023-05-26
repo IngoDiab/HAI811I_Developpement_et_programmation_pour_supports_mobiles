@@ -1,0 +1,10 @@
+package com.mobile.reverleaf;
+
+public enum CARD_MOD
+{
+    MY_EVENTS_CARD,
+    EVENTS_INSCRIPTIONS_CARD,
+    EVENTS_FAVORIS_CARD,
+    EVENTS_PROXIMITY_CARD,
+    EVENTS_TENDANCES_CARD,
+}

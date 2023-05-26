@@ -1,6 +1,7 @@
 package com.mobile.reverleaf;
 
 import android.app.Application;
+import android.app.Dialog;
 
 import androidx.annotation.NonNull;
 
@@ -69,12 +70,13 @@ public class PaypalManager extends Application {
         return _order;
     }
 
-    public static OnApprove CreateApprovalFeedback(Consumer<CaptureOrderResult> _onPaypalPaid)
+    public static OnApprove CreateApprovalFeedback(Consumer<CaptureOrderResult> _onPaypalPaid, Dialog _popup)
     {
         OnCaptureComplete _captureComplete = new OnCaptureComplete() {
             @Override
             public void onCaptureComplete(@NonNull CaptureOrderResult captureOrderResult) {
                 _onPaypalPaid.accept(captureOrderResult);
+                _popup.dismiss();
             }
         };
 

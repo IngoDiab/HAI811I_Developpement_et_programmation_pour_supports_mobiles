@@ -1,6 +1,7 @@
 package com.mobile.reverleaf;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.function.Consumer;
 
 import android.app.Activity;
@@ -11,6 +12,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -88,6 +90,14 @@ public class ViewHelper {
         _activity.finish();
     }
 
+    public static void StartNewIntent(Activity _activity, Class _class, Bundle _bundle)
+    {
+        Intent _intent = new Intent(_activity, _class);
+        _intent.putExtras(_bundle);
+        _activity.startActivity(_intent);
+        _activity.finish();
+    }
+
     public static void SwitchFragment(FragmentManager _fragManager, Class _target)
     {
         _fragManager.beginTransaction()
@@ -137,16 +147,22 @@ public class ViewHelper {
     {
         Dialog _subscriptionPopUp = OpenPopUp(_context, _idLayoutPopUp);
         PaymentButtonContainer _paypalButton = GetViewElement(_subscriptionPopUp.getWindow(), R.id.payment_button_container);
-        _paypalButton.setup(PaypalManager.CreatePaymentOrder(_subPrice), PaypalManager.CreateApprovalFeedback(_onPaypalPaid));
+        _paypalButton.setup(PaypalManager.CreatePaymentOrder(_subPrice), PaypalManager.CreateApprovalFeedback(_onPaypalPaid, _subscriptionPopUp));
 
         return _subscriptionPopUp;
     }
 
-    public static LinearLayout CreateCard(Context _context, boolean _isMiniCard, String _nameCard, @Nullable Float _priceCard, Consumer<View> _clickCallback)
+    public static void DisplayCardsLoadedEvents(LinearLayout _globalView, List<LinearLayout> _myCards)
+    {
+        for(LinearLayout _card : _myCards)
+            _globalView.addView(_card);
+    }
+
+    public static LinearLayout CreateSubCard(Context _context, String _nameCard, Float _priceCard, Consumer<View> _clickCallback)
     {
         int _margin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, _context.getResources().getDisplayMetrics());
-        int _height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, _isMiniCard ? 100 : 160, _context.getResources().getDisplayMetrics());
-        int _width = _isMiniCard ? (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, _context.getResources().getDisplayMetrics()) : LinearLayout.LayoutParams.MATCH_PARENT;
+        int _height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, _context.getResources().getDisplayMetrics());
+        int _width = LinearLayout.LayoutParams.MATCH_PARENT;
 
         //Layout
         LinearLayout _layoutCard = new LinearLayout(_context);
@@ -179,7 +195,7 @@ public class ViewHelper {
         TextView _name = new TextView(_context);
         _name.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
         _name.setText(_nameCard);
-        if(_priceCard == null) _name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        _name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         _name.setPadding(_margin/2,0,0,0);
         _name.setTextColor(ContextCompat.getColor(_context, R.color.white));
         _name.setTextSize(18);
@@ -187,12 +203,178 @@ public class ViewHelper {
         _cardView.addView(_name);
 
         //Price
-        if(_priceCard == null) return _layoutCard;
         TextView _price = new TextView(_context);
         _price.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
         _price.setText(String.format("%.02f", _priceCard)+"€");
         _price.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
         _price.setPadding(0,0,_margin,0);
+        _price.setTextColor(ContextCompat.getColor(_context, R.color.white));
+        _price.setTextSize(18);
+        _price.setTypeface(_price.getTypeface(), Typeface.BOLD_ITALIC);
+        _cardView.addView(_price);
+
+        return _layoutCard;
+    }
+
+    public static LinearLayout CreateMyEventCard(Context _context, String _nameCard, Consumer<View> _clickCallback, Consumer<View> _deleteCallback)
+    {
+        int _heightDelete = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 26, _context.getResources().getDisplayMetrics());
+        int _margin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, _context.getResources().getDisplayMetrics());
+        int _height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, _context.getResources().getDisplayMetrics());
+        int _width = LinearLayout.LayoutParams.MATCH_PARENT;
+
+        //Layout
+        LinearLayout _layoutCard = new LinearLayout(_context);
+        LinearLayout.LayoutParams _paramsLayoutCard = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        _paramsLayoutCard.gravity = Gravity.CENTER;
+        _paramsLayoutCard.topMargin = _margin;
+        _layoutCard.setLayoutParams(_paramsLayoutCard);
+        _layoutCard.setOrientation(LinearLayout.VERTICAL);
+
+        ImageButton _deleteButton = new ImageButton(_context);
+        BindOnClick(_deleteButton, _deleteCallback);
+        LinearLayout.LayoutParams _deleteLayoutCard = new LinearLayout.LayoutParams(_width, _heightDelete);
+        _deleteLayoutCard.bottomMargin = -_margin;
+        _deleteButton.setLayoutParams(_deleteLayoutCard);
+        _deleteButton.setBackgroundColor(Color.TRANSPARENT);
+        _deleteButton.setImageDrawable(ContextCompat.getDrawable(_context, R.drawable.icon_delete));
+        _layoutCard.addView(_deleteButton);
+
+        //ImageButton
+        ImageButton _imageButton = new ImageButton(_context);
+        BindOnClick(_imageButton, _clickCallback);
+        _imageButton.setLayoutParams(new LinearLayout.LayoutParams(_width, _height));
+        _imageButton.setBackgroundColor(Color.TRANSPARENT);
+        _imageButton.setImageDrawable(ContextCompat.getDrawable(_context, R.drawable.abo_bronze));
+        _layoutCard.addView(_imageButton);
+
+        //Card
+        CardView _cardView = new CardView(_context);
+        LinearLayout.LayoutParams _paramsCardView = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        _paramsCardView.topMargin = -_margin;
+        _cardView.setLayoutParams(_paramsCardView);
+        _cardView.setCardBackgroundColor(ContextCompat.getColor(_context, R.color.mainColor));
+        _cardView.setRadius(3);
+        _cardView.setCardElevation(4);
+        _layoutCard.addView(_cardView);
+
+        //Name
+        TextView _name = new TextView(_context);
+        _name.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+        _name.setText(_nameCard);
+        _name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        _name.setPadding(_margin/2,0,0,0);
+        _name.setTextColor(ContextCompat.getColor(_context, R.color.white));
+        _name.setTextSize(18);
+        _name.setTypeface(_name.getTypeface(), Typeface.BOLD);
+        _cardView.addView(_name);
+
+        //_deleteButton.bringToFront();
+        //_layoutCard.requestLayout();
+        //_layoutCard.invalidate();
+
+        return _layoutCard;
+    }
+
+    public static LinearLayout CreateCategoryCard(Context _context, String _nameCard, Consumer<View> _clickCallback)
+    {
+        int _margin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, _context.getResources().getDisplayMetrics());
+        int _height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, _context.getResources().getDisplayMetrics());
+        int _width = LinearLayout.LayoutParams.MATCH_PARENT;
+
+        //Layout
+        LinearLayout _layoutCard = new LinearLayout(_context);
+        LinearLayout.LayoutParams _paramsLayoutCard = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        _paramsLayoutCard.gravity = Gravity.CENTER;
+        _paramsLayoutCard.topMargin = _margin;
+        _layoutCard.setLayoutParams(_paramsLayoutCard);
+        _layoutCard.setOrientation(LinearLayout.VERTICAL);
+
+        //ImageButton
+        ImageButton _imageButton = new ImageButton(_context);
+        BindOnClick(_imageButton, _clickCallback);
+        _imageButton.setLayoutParams(new LinearLayout.LayoutParams(_width, _height));
+        _imageButton.setBackgroundColor(Color.TRANSPARENT);
+        _imageButton.setImageDrawable(ContextCompat.getDrawable(_context, R.drawable.abo_bronze));
+        _layoutCard.addView(_imageButton);
+
+
+        //Card
+        CardView _cardView = new CardView(_context);
+        LinearLayout.LayoutParams _paramsCardView = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        _paramsCardView.topMargin = -_margin;
+        _cardView.setLayoutParams(_paramsCardView);
+        _cardView.setCardBackgroundColor(ContextCompat.getColor(_context, R.color.mainColor));
+        _cardView.setRadius(3);
+        _cardView.setCardElevation(4);
+        _layoutCard.addView(_cardView);
+
+        //Name
+        TextView _name = new TextView(_context);
+        _name.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+        _name.setText(_nameCard);
+        _name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        _name.setPadding(_margin/2,0,0,0);
+        _name.setTextColor(ContextCompat.getColor(_context, R.color.white));
+        _name.setTextSize(18);
+        _name.setTypeface(_name.getTypeface(), Typeface.BOLD);
+        _cardView.addView(_name);
+
+        return _layoutCard;
+    }
+
+    public static LinearLayout CreateHomeCard(Context _context, String _nameCard, @Nullable Float _priceCard, Consumer<View> _clickCallback)
+    {
+        int _marginTopLayout = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, _context.getResources().getDisplayMetrics());
+        int _marginLeftLayout = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, _context.getResources().getDisplayMetrics());
+        int _height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, _context.getResources().getDisplayMetrics());
+        int _width = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 125, _context.getResources().getDisplayMetrics());
+
+        //Layout
+        LinearLayout _layoutCard = new LinearLayout(_context);
+        LinearLayout.LayoutParams _paramsLayoutCard = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        _paramsLayoutCard.gravity = Gravity.CENTER;
+        _paramsLayoutCard.topMargin = _marginTopLayout;
+        _paramsLayoutCard.rightMargin = _marginLeftLayout;
+        _layoutCard.setLayoutParams(_paramsLayoutCard);
+        _layoutCard.setOrientation(LinearLayout.VERTICAL);
+
+        //ImageButton
+        ImageButton _imageButton = new ImageButton(_context);
+        BindOnClick(_imageButton, _clickCallback);
+        _imageButton.setLayoutParams(new LinearLayout.LayoutParams(_width, _height));
+        _imageButton.setBackgroundColor(Color.TRANSPARENT);
+        _imageButton.setImageDrawable(ContextCompat.getDrawable(_context, R.drawable.abo_bronze));
+        _layoutCard.addView(_imageButton);
+
+        //Card
+        CardView _cardView = new CardView(_context);
+        LinearLayout.LayoutParams _paramsCardView = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        _paramsCardView.topMargin = -_marginTopLayout;
+        _cardView.setLayoutParams(_paramsCardView);
+        _cardView.setCardBackgroundColor(ContextCompat.getColor(_context, R.color.mainColor));
+        _cardView.setRadius(3);
+        _cardView.setCardElevation(4);
+        _layoutCard.addView(_cardView);
+
+        //Name
+        TextView _name = new TextView(_context);
+        _name.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+        _name.setText(_nameCard);
+        if(_priceCard == null) _name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        _name.setPadding(_marginTopLayout/2,0,0,0);
+        _name.setTextColor(ContextCompat.getColor(_context, R.color.white));
+        _name.setTextSize(18);
+        _name.setTypeface(_name.getTypeface(), Typeface.BOLD);
+        _cardView.addView(_name);
+
+        if(_priceCard == null) return _layoutCard;
+        //Price
+        TextView _price = new TextView(_context);
+        _price.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+        _price.setText(String.format("%.02f", _priceCard)+"€");
+        _price.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+        _price.setPadding(0,0,_marginTopLayout,0);
         _price.setTextColor(ContextCompat.getColor(_context, R.color.white));
         _price.setTextSize(18);
         _price.setTypeface(_price.getTypeface(), Typeface.BOLD_ITALIC);
