@@ -40,7 +40,7 @@ public class CreateEvent_Sport extends CreateEvent {
         String _sportName = mSportName.getText().toString();
         String _championnat = mChampionnat.getText().toString();
         String _duree = mDuree.getText().toString();
-        EventData_Sport _eventSport = new EventData_Sport(_title, _desc, _date, mChosenLieu, _price, _sportName, _championnat, _duree);
+        EventData_Sport _eventSport = new EventData_Sport(_title, _desc, _date, mChosenLieuAdress, mChosenLieuLatLng.latitude, mChosenLieuLatLng.longitude, _price, _sportName, _championnat, _duree);
 
         FirebaseManager.RegisterEvent(_eventSport);
         super.RegisterCreatedEvent();

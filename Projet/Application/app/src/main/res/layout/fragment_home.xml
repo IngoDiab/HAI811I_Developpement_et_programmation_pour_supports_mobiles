@@ -103,12 +103,24 @@
                 android:src="@drawable/event_proximite_icon" />
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/open_sans_bold"
                 android:text="Évènements à proximité"
                 android:layout_gravity="center"
                 android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/refreshButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:backgroundTint="@color/mainColor"
+                android:text="Refresh"
+                android:textAlignment="viewStart"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="italic" />
 
         </LinearLayout>
 

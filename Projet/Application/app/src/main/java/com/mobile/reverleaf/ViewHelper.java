@@ -1,5 +1,6 @@
 package com.mobile.reverleaf;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.function.Consumer;
@@ -28,12 +29,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.paypal.checkout.order.CaptureOrderResult;
 import com.paypal.checkout.paymentbutton.PaymentButtonContainer;
 
@@ -83,19 +89,19 @@ public class ViewHelper {
         });
     }
 
-    public static void StartNewIntent(Activity _activity, Class _class)
+    public static void StartNewIntent(Activity _activity, Class _class, boolean _finishCurrentActivity)
     {
         Intent _intent = new Intent(_activity, _class);
         _activity.startActivity(_intent);
-        _activity.finish();
+        if(_finishCurrentActivity) _activity.finish();
     }
 
-    public static void StartNewIntent(Activity _activity, Class _class, Bundle _bundle)
+    public static void StartNewIntent(Activity _activity, Class _class, Bundle _bundle, boolean _finishCurrentActivity)
     {
         Intent _intent = new Intent(_activity, _class);
         _intent.putExtras(_bundle);
         _activity.startActivity(_intent);
-        _activity.finish();
+        if(_finishCurrentActivity) _activity.finish();
     }
 
     public static void SwitchFragment(FragmentManager _fragManager, Class _target)
@@ -104,6 +110,32 @@ public class ViewHelper {
                 .addToBackStack("name")
                 .replace(R.id.homePage, _target, null)
                 .commit();
+    }
+
+    public static void SwitchFragment(FragmentManager _fragManager, Fragment _target, Bundle _bundle)
+    {
+        _target.setArguments(_bundle);
+        _fragManager.beginTransaction()
+                .addToBackStack("name")
+                .replace(R.id.homePage, _target, null)
+                .commit();
+    }
+
+    public static void InitializeFragmentAutoCompletion(AutocompleteSupportFragment _fieldAutoCompletion, List<Place.Field> _dataFocused, Consumer<Place> _onPlaceFound)
+    {
+        _fieldAutoCompletion.setPlaceFields(_dataFocused);
+
+        _fieldAutoCompletion.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onError(@NonNull Status status) {
+
+            }
+
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                _onPlaceFound.accept(place);
+            }
+        });
     }
 
     public static void OpenCalendar(Context _context, Consumer<String> _onDateChosen)
@@ -216,7 +248,7 @@ public class ViewHelper {
         return _layoutCard;
     }
 
-    public static LinearLayout CreateMyEventCard(Context _context, String _nameCard, Consumer<View> _clickCallback, Consumer<View> _deleteCallback)
+    public static LinearLayout CreateMyEventCard(Context _context, String _nameCard, Consumer<View> _clickCallback, @Nullable Consumer<View> _deleteCallback)
     {
         int _heightDelete = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 26, _context.getResources().getDisplayMetrics());
         int _margin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, _context.getResources().getDisplayMetrics());
@@ -231,14 +263,18 @@ public class ViewHelper {
         _layoutCard.setLayoutParams(_paramsLayoutCard);
         _layoutCard.setOrientation(LinearLayout.VERTICAL);
 
-        ImageButton _deleteButton = new ImageButton(_context);
-        BindOnClick(_deleteButton, _deleteCallback);
-        LinearLayout.LayoutParams _deleteLayoutCard = new LinearLayout.LayoutParams(_width, _heightDelete);
-        _deleteLayoutCard.bottomMargin = -_margin;
-        _deleteButton.setLayoutParams(_deleteLayoutCard);
-        _deleteButton.setBackgroundColor(Color.TRANSPARENT);
-        _deleteButton.setImageDrawable(ContextCompat.getDrawable(_context, R.drawable.icon_delete));
-        _layoutCard.addView(_deleteButton);
+        //DeleteButton
+        if(_deleteCallback != null)
+        {
+            ImageButton _deleteButton = new ImageButton(_context);
+            BindOnClick(_deleteButton, _deleteCallback);
+            LinearLayout.LayoutParams _deleteLayoutCard = new LinearLayout.LayoutParams(_width, _heightDelete);
+            _deleteLayoutCard.bottomMargin = -_margin;
+            _deleteButton.setLayoutParams(_deleteLayoutCard);
+            _deleteButton.setBackgroundColor(Color.TRANSPARENT);
+            _deleteButton.setImageDrawable(ContextCompat.getDrawable(_context, R.drawable.icon_delete));
+            _layoutCard.addView(_deleteButton);
+        }
 
         //ImageButton
         ImageButton _imageButton = new ImageButton(_context);

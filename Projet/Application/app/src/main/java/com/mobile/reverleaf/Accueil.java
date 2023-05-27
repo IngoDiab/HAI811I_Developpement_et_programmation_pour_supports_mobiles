@@ -29,9 +29,9 @@ public class Accueil extends AppCompatActivity {
     public void InitializeButton()
     {
         mConnexionButton = ViewHelper.GetViewElement(this, R.id.connexionButton);
-        ViewHelper.BindOnClick(mConnexionButton, (_view)->ViewHelper.StartNewIntent(this, Connexion.class));
+        ViewHelper.BindOnClick(mConnexionButton, (_view)->ViewHelper.StartNewIntent(this, Connexion.class, false));
 
         mInscriptionButton = ViewHelper.GetViewElement(this, R.id.inscriptionButton);
-        ViewHelper.BindOnClick(mInscriptionButton, (_view)->ViewHelper.StartNewIntent(this, Inscription.class));
+        ViewHelper.BindOnClick(mInscriptionButton, (_view)->ViewHelper.StartNewIntent(this, Inscription.class, false));
     }
 }

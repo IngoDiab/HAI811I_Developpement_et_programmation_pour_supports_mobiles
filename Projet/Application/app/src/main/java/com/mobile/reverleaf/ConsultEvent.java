@@ -10,12 +10,13 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ConsultEvent extends AppCompatActivity {
-    protected TextView mTitle, mDesc;
+    protected TextView mTitle, mDesc, mNbFavoris, mNbInscrits;
     protected Button mCategorie, mDate, mLieu, mPrice, mBackButton;
     protected List<Button> mSelectedButtons = new ArrayList<>();
     protected ImageButton mFavoris;
@@ -52,6 +53,8 @@ public abstract class ConsultEvent extends AppCompatActivity {
     {
         mTitle = ViewHelper.GetViewElement(this, R.id.title);
         mDesc = ViewHelper.GetViewElement(this, R.id.desc);
+        mNbFavoris = ViewHelper.GetViewElement(this, R.id.nbFavoris);
+        mNbInscrits = ViewHelper.GetViewElement(this, R.id.nbInscrits);
     }
 
     protected void InitializeButton()
@@ -71,30 +74,56 @@ public abstract class ConsultEvent extends AppCompatActivity {
 
     protected void BindButtons()
     {
-        ViewHelper.BindOnClick(mFavoris, _view->ManageFavorisEvent());
+        ViewHelper.BindOnClick(mFavoris, _view->ManageFavorisEvent(!mUserHasInFavoris));
 
         ViewHelper.BindOnClick(mCategorie, _view->ToggleSearch(mCategorie));
         ViewHelper.BindOnClick(mDate, _view->ToggleSearch(mDate));
         ViewHelper.BindOnClick(mLieu, _view->ToggleSearch(mLieu));
         ViewHelper.BindOnClick(mPrice, _view->ToggleSearch(mPrice));
 
-        ViewHelper.BindOnClick(mInscription, _view->ManageInscriptionEvent());
+        ViewHelper.BindOnClick(mInscription, _view->ManageInscriptionEvent(!mUserIsRegisteredToThisEvent));
+        ViewHelper.BindOnClick(mSearchSame, _view->SearchSame());
 
-        ViewHelper.BindOnClick(mBackButton, _view->ViewHelper.StartNewIntent(this, Home.class));
+        ViewHelper.BindOnClick(mBackButton, _view->finish());
     }
 
-    protected void ManageInscriptionEvent()
+    protected void SearchSame()
+    {
+        Bundle _bundleSearch = new Bundle();
+
+        ArrayList<String> _categories = new ArrayList<>();
+        if(!FillSearchWithButton(mCategorie).equals("")) _categories.add(FillSearchWithButton(mCategorie));
+        _bundleSearch.putStringArrayList(Integer.toString(R.id.eventCategorie), _categories);
+        _bundleSearch.putString(Integer.toString(R.id.eventLieu), FillSearchWithButton(mLieu));
+        _bundleSearch.putString(Integer.toString(R.id.dateBegin), FillSearchWithButton(mDate));
+        _bundleSearch.putString(Integer.toString(R.id.dateEnd), FillSearchWithButton(mDate));
+        _bundleSearch.putString(Integer.toString(R.id.priceMin), FillSearchWithButton(mPrice));
+        _bundleSearch.putString(Integer.toString(R.id.priceMax), FillSearchWithButton(mPrice));
+        _bundleSearch.putString("methodName", "DisplayResultSearch");
+
+        ViewHelper.StartNewIntent(this, Home.class, _bundleSearch, true);
+    }
+
+    protected String FillSearchWithButton(Button _field)
+    {
+        if(!mSelectedButtons.contains(_field)) return "";
+        return _field.getText().toString();
+    }
+
+    protected void ManageInscriptionEvent(boolean _addOrRemoveInscrit)
     {
         Bundle _bundle = getIntent().getExtras();
         String _eventID = _bundle.getString("ID");
-        FirebaseManager.ManageInteractionWithEvent(!mUserIsRegisteredToThisEvent, _eventID, "mIDInscritEvents", "mNbInscrits", _id->RefreshEvent(_id));
+        FirebaseManager.ManageInteractionWithEvent(_addOrRemoveInscrit, _eventID, "mIDInscritEvents", "mNbInscrits", _id->RefreshEvent(_id));
+
+        if(mUserHasInFavoris) ManageFavorisEvent(false);
     }
 
-    protected void ManageFavorisEvent()
+    protected void ManageFavorisEvent(boolean _addOrRemoveFavoris)
     {
         Bundle _bundle = getIntent().getExtras();
         String _eventID = _bundle.getString("ID");
-        FirebaseManager.ManageInteractionWithEvent(!mUserHasInFavoris, _eventID, "mIDFavorisEvents", "mNbFavoris", _id->RefreshEvent(_id));
+        FirebaseManager.ManageInteractionWithEvent(_addOrRemoveFavoris, _eventID, "mIDFavorisEvents", "mNbFavoris", _id->RefreshEvent(_id));
     }
 
     protected void ToggleSearch(Button _button)
@@ -126,7 +155,7 @@ public abstract class ConsultEvent extends AppCompatActivity {
         mUserHasInFavoris |= _isFavoris;
         mInscription.setVisibility(mUserIsOwnerEvent ? View.GONE : View.VISIBLE);
         mInscription.setText(mUserIsRegisteredToThisEvent ? "Desinscription" : "Inscription");
-        mFavoris.setVisibility(mUserIsOwnerEvent ? View.GONE : View.VISIBLE);
+        mFavoris.setVisibility(mUserIsOwnerEvent || mUserIsRegisteredToThisEvent ? View.GONE : View.VISIBLE);
         mFavoris.setImageResource(mUserHasInFavoris ? R.drawable.favoris_icon : R.drawable.not_favoris_icon);
     }
 
@@ -141,6 +170,9 @@ public abstract class ConsultEvent extends AppCompatActivity {
         mDate.setText(_eventDataBundle.getString(Integer.toString(R.id.eventDate)));
         mLieu.setText(_eventDataBundle.getString(Integer.toString(R.id.eventLieu)));
         mPrice.setText(_eventDataBundle.getString(Integer.toString(R.id.eventPrice))+"€");
+
+        mNbFavoris.setText(_eventDataBundle.getString(Integer.toString(R.id.nbFavoris)));
+        mNbInscrits.setText(_eventDataBundle.getString(Integer.toString(R.id.nbInscrits)));
     }
 
 }

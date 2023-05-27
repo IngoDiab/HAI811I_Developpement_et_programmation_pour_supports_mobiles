@@ -108,6 +108,76 @@
                                 android:textSize="34sp"
                                 android:textStyle="bold" />
 
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="30sp"
+                                android:layout_gravity="center"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/nbFavoris"
+                                    android:layout_width="0dp"
+                                    android:layout_height="0dp"
+                                    android:text="0"
+                                    android:textAlignment="textEnd"
+                                    android:textColor="@color/mainColor"
+                                    android:textSize="20sp"
+                                    android:textStyle="bold"
+                                    app:layout_constraintHeight_percent="1"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintWidth_percent=".25" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="0dp"
+                                    android:gravity="center"
+                                    android:text="Utilisateur(s) aime(nt) cet évènement "
+                                    android:textColor="@color/mainColor"
+                                    android:textSize="10sp"
+                                    android:textStyle="bold"
+                                    app:layout_constraintHeight_percent="1"
+                                    app:layout_constraintLeft_toRightOf="@+id/nbFavoris"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintWidth_percent=".75" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="30sp"
+                                android:layout_gravity="center"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/nbInscrits"
+                                    android:layout_width="0dp"
+                                    android:layout_height="0dp"
+                                    android:text="0"
+                                    android:textAlignment="textEnd"
+                                    android:textColor="@color/mainColor"
+                                    android:textSize="20sp"
+                                    android:textStyle="bold"
+                                    app:layout_constraintHeight_percent="1"
+                                    app:layout_constraintWidth_percent=".25"
+                                    app:layout_constraintLeft_toLeftOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"/>
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="0dp"
+                                    android:gravity="center"
+                                    android:text="Utilisateur(s) inscrit à cet évènement "
+                                    android:textColor="@color/mainColor"
+                                    android:textSize="10sp"
+                                    android:textStyle="bold"
+                                    app:layout_constraintHeight_percent="1"
+                                    app:layout_constraintLeft_toRightOf="@+id/nbInscrits"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintWidth_percent=".75" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                         </LinearLayout>
 

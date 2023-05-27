@@ -3,6 +3,7 @@ package com.mobile.reverleaf;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.location.Location;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -26,7 +27,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
@@ -101,6 +105,12 @@ public class FirebaseManager {
                                 _nameMethod = "CreateMyEventCard";
                                 _parametersTypes = new Class[]{Activity.class, FragmentManager.class};
                                 _parameters = new Object[]{_activity, _fragManager};
+                                break;
+
+                            case EVENTS_SEARCHED:
+                                _nameMethod = "CreateSearchedCard";
+                                _parametersTypes = new Class[]{Activity.class};
+                                _parameters = new Object[]{_activity};
                                 break;
 
                             case EVENTS_INSCRIPTIONS_CARD:
@@ -181,6 +191,86 @@ public class FirebaseManager {
             }
         };
         mEventsReference.orderByChild("mNbInscrits").limitToFirst(_nbItemsByCategory).addListenerForSingleValueEvent(_listener);
+    }
+
+    public static void LoadProximityEvents(CARD_MOD _mod, Activity _activity, FragmentManager _fragManager, Location _userLocation, double _maxDistance, Consumer<List<LinearLayout>> _getCardsCallback)
+    {
+        ValueEventListener _listener = new ValueEventListener(){
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<String> _ids = new ArrayList<String>();
+                for (DataSnapshot dsp : snapshot.getChildren())
+                {
+                    Location _eventLocation = new Location(dsp.child("mID").getValue(String.class) + "_Location");
+                    _eventLocation.setLatitude((double)dsp.child("mLocationLatitude").getValue());
+                    _eventLocation.setLongitude((double)dsp.child("mLocationLongitude").getValue());
+                    float _distanceUserToEvent = _userLocation.distanceTo(_eventLocation);
+                    if(_distanceUserToEvent<_maxDistance)
+                        _ids.add((String)dsp.child("mID").getValue());
+                }
+                LoadCorrespondingEvents(_mod, _activity, _fragManager, _ids, _getCardsCallback);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        mEventsReference.addListenerForSingleValueEvent(_listener);
+    }
+
+    public static void LoadSearchedEvents(CARD_MOD _mod, Activity _activity, FragmentManager _fragManager, SearchData _data, Consumer<List<LinearLayout>> _getCardsCallback)
+    {
+        ValueEventListener _listener = new ValueEventListener(){
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<String> _ids = new ArrayList<String>();
+                for (DataSnapshot dsp : snapshot.getChildren())
+                {
+                    //Title
+                    String _title = (String)dsp.child("mName").getValue();
+                    boolean _sameTitle = _title.equals("") || _data.mTitle == null || _data.mTitle.equals("") || _data.mTitle.equalsIgnoreCase(_title);
+                    if(!_sameTitle) continue;
+
+                    //Category
+                    String _category = dsp.child("mTypeEvent").getValue(String.class);
+                    boolean _containsCategory = _data.mCategories.isEmpty() || _data.mCategories.contains(_category);
+                    if(!_containsCategory) continue;
+
+                    //Lieu
+                    String _lieu = dsp.child("mLocation").getValue(String.class);
+                    boolean _sameLieu = _data.mLieu.isEmpty() || _data.mLieu.equalsIgnoreCase(_lieu);
+                    if(!_sameLieu) continue;
+
+                    //Date
+                    boolean _inBetweenDate = false;
+                    String _date = dsp.child("mDate").getValue(String.class);
+                    SimpleDateFormat _parserDate = new SimpleDateFormat("dd/MM/yyyy");
+                    try
+                    {
+                        Date _dateEventParsed = _parserDate.parse(_date);
+                        //True if begin date is not specified or date is same or before
+                        boolean _eventIsAfterBegin = _data.mDateBegin.equals("") || _data.mDateBegin.equals(_date) || _parserDate.parse(_data.mDateBegin).before(_dateEventParsed);
+                        //True if end date is not specified or date is same or after
+                        boolean _eventIsBeforeEnd = _data.mDateEnd.equals("") || _data.mDateEnd.equals(_date) || _parserDate.parse(_data.mDateEnd).after(_dateEventParsed);
+                        _inBetweenDate = _eventIsAfterBegin && _eventIsBeforeEnd;
+                    } catch (ParseException e) {}
+                    if(!_inBetweenDate) continue;
+
+                    //Price
+                    Float _price = dsp.child("mPrice").getValue(Float.class);
+                    boolean _inBetweenPrice = (_data.mPriceMin == -1 || _data.mPriceMin <= _price) && (_data.mPriceMax == -1 || _data.mPriceMax >= _price);
+                    if(!_inBetweenPrice) continue;
+
+                    _ids.add((String)dsp.child("mID").getValue());
+                }
+                LoadCorrespondingEvents(_mod, _activity, _fragManager, _ids, _getCardsCallback);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        mEventsReference.addListenerForSingleValueEvent(_listener);
     }
 
     public static void IsEventInUserList(String _listName, String _idEvent, Consumer<Boolean> _isInListCallback)

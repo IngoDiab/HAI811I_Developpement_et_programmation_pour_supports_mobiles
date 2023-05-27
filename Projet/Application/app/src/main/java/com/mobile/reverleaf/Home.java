@@ -1,11 +1,9 @@
 package com.mobile.reverleaf;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageButton;
 
 public class Home extends AppCompatActivity {
@@ -16,9 +14,31 @@ public class Home extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        InitializeActivity();
+    }
 
-        BindUserBarButtons();
-        BindButtons();
+    protected void InitializeActivity()
+    {
+        Bundle _bundle = getIntent().getExtras();
+        if(_bundle == null)
+        {
+            DefaultBehaviour();
+            return;
+        };
+        String _methodName = _bundle.getString("methodName");
+
+        if(_methodName == null) DefaultBehaviour();
+
+        switch (_methodName)
+        {
+            case "DisplayResultSearch":
+                DisplayResultSearch(_bundle);
+                break;
+
+            default:
+                DefaultBehaviour();
+                break;
+        }
     }
 
     public void BindHomeButton(int _idButton, Class _fragmentTarget)
@@ -45,6 +65,18 @@ public class Home extends AppCompatActivity {
     protected void Disconnect()
     {
         FirebaseManager.SignOut();
-        ViewHelper.StartNewIntent(this, Accueil.class);
+        ViewHelper.StartNewIntent(this, Accueil.class, true);
+    }
+
+    protected void DefaultBehaviour()
+    {
+        BindUserBarButtons();
+        BindButtons();
+    }
+
+    protected void DisplayResultSearch(Bundle _bundle)
+    {
+        DefaultBehaviour();
+        ViewHelper.SwitchFragment(getSupportFragmentManager(), new Search_Result_Fragment(), _bundle);
     }
 }

@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
@@ -24,7 +25,8 @@ public abstract class CreateEvent extends AppCompatActivity {
 
     protected EditText mTitle, mDesc, mPrice;
     protected AutocompleteSupportFragment mLieu;
-    protected String mChosenLieu = "";
+    protected String mChosenLieuAdress = "";
+    protected LatLng mChosenLieuLatLng;
     LinearLayout mErrorLayout;
     TextView mDate, mErrorText;
     protected Button mCreate, mBackButton;
@@ -45,11 +47,12 @@ public abstract class CreateEvent extends AppCompatActivity {
         InitializeTextViews();
         InitializeEditText();
         InitializeButton();
-        InitializeFragmentAutoCompletion();
+        ViewHelper.InitializeFragmentAutoCompletion(mLieu, Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG), place -> {mChosenLieuAdress = place.getAddress();
+                                                                                                                                                mChosenLieuLatLng = place.getLatLng();});
 
         ViewHelper.BindOnClick(mCreate, _view->RegisterCreatedEvent());
         ViewHelper.BindOnClick(mDate, _view->ViewHelper.OpenCalendar(this, _date -> mDate.setText(_date)));
-        ViewHelper.BindOnClick(mBackButton, _view->ViewHelper.StartNewIntent(this, Home.class));
+        ViewHelper.BindOnClick(mBackButton, _view->finish());
     }
 
     public void InitializeLayout()
@@ -96,26 +99,9 @@ public abstract class CreateEvent extends AppCompatActivity {
         return _noError;
     }
 
-    protected void InitializeFragmentAutoCompletion()
-    {
-        mLieu.setPlaceFields((Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS)));
-
-        mLieu.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onError(@NonNull Status status) {
-
-            }
-
-            @Override
-            public void onPlaceSelected(@NonNull Place place) {
-                mChosenLieu = place.getAddress();
-            }
-        });
-    }
-
     protected void RegisterCreatedEvent()
     {
-        ViewHelper.StartNewIntent(this, Home.class);
+        ViewHelper.StartNewIntent(this, Home.class, true);
         ViewHelper.PrintToast(this, "Évènement créé !");
     }
 }

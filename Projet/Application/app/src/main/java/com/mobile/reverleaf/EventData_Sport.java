@@ -17,8 +17,8 @@ public class EventData_Sport extends EventData{
         this.mDuree = "None";
     }
 
-    public EventData_Sport(String _name, String _description, String _date, String _location, float _price, String _sportName, String _championnat, String _duree) {
-        super(_name, _description, _date, _location, _price);
+    public EventData_Sport(String _name, String _description, String _date, String _location, double _latitude, double _longitude, float _price, String _sportName, String _championnat, String _duree) {
+        super(_name, _description, _date, _location, _latitude, _longitude, _price);
         this.mTypeEvent = "Sport";
         this.mSportName = _sportName;
         this.mChampionnat = _championnat;
@@ -32,7 +32,7 @@ public class EventData_Sport extends EventData{
         _eventDataBundle.putString(Integer.toString(R.id.eventSport), mSportName);
         _eventDataBundle.putString(Integer.toString(R.id.eventChampionnat), mChampionnat);
         _eventDataBundle.putString(Integer.toString(R.id.eventDuree), mDuree);
-        ViewHelper.StartNewIntent(_activity, ConsultEvent_Sport.class, _eventDataBundle);
+        ViewHelper.StartNewIntent(_activity, ConsultEvent_Sport.class, _eventDataBundle, false);
         return _eventDataBundle;
     }
 }

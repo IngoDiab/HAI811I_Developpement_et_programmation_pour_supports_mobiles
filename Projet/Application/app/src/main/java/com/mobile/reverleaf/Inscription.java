@@ -49,7 +49,7 @@ public class Inscription extends AppCompatActivity {
         ViewHelper.BindOnClick(mInscriptionButton, (_view)->RegisterUser(_view));
 
         mBackButton = ViewHelper.GetViewElement(this, R.id.backButton);
-        ViewHelper.BindOnClick(mBackButton, (_view)->ViewHelper.StartNewIntent(this, Accueil.class));
+        ViewHelper.BindOnClick(mBackButton, (_view)->finish());
     }
 
     public void InitializeEditTexts()
@@ -129,7 +129,7 @@ public class Inscription extends AppCompatActivity {
 
     public void OnSuccessInscription()
     {
-        FirebaseManager.LoadCurrentUserData(_userData->ViewHelper.StartNewIntent(this, Abonnement.class), null);
+        FirebaseManager.LoadCurrentUserData(_userData->ViewHelper.StartNewIntent(this, Abonnement.class, true), null);
     }
 
     public void OnFailedInscription()

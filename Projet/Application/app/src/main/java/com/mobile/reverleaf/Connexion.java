@@ -45,7 +45,7 @@ public class Connexion extends AppCompatActivity {
         ViewHelper.BindOnClick(mConnexionButton, (_view)->ConnectUser(_view));
 
         mBackButton = ViewHelper.GetViewElement(this, R.id.backButton);
-        ViewHelper.BindOnClick(mBackButton, (_view)->ViewHelper.StartNewIntent(this, Accueil.class));
+        ViewHelper.BindOnClick(mBackButton, (_view)->finish());
     }
 
     public void InitializeEditTexts()
@@ -87,9 +87,9 @@ public class Connexion extends AppCompatActivity {
     public void LoadAbonnementOrHub(UserData _user)
     {
         if(_user.mSubscription.equals("None"))
-            ViewHelper.StartNewIntent(this, Abonnement.class);
+            ViewHelper.StartNewIntent(this, Abonnement.class, false);
         else
-            ViewHelper.StartNewIntent(this, Home.class);
+            ViewHelper.StartNewIntent(this, Home.class, true);
     }
 
     public void OnFailedConnexion()

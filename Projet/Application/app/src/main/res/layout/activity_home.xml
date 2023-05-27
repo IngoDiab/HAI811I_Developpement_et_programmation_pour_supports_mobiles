@@ -32,8 +32,7 @@
                 app:layout_constraintHeight_percent="0.25"
                 app:layout_constraintWidth_percent="0.15"
                 android:background="@android:color/transparent"
-                app:layout_constraintLeft_toLeftOf="@+id/layoutHeader"
-                app:srcCompat="@drawable/info_icon" />
+                app:layout_constraintLeft_toLeftOf="@+id/layoutHeader" />
 
             <ImageView
                 android:id="@+id/imageView"

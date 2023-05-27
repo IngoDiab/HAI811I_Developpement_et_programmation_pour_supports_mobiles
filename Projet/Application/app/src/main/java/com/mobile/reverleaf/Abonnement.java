@@ -51,7 +51,7 @@ public class Abonnement extends AppCompatActivity {
     public void BackToAccueil()
     {
         FirebaseManager.SignOut();
-        ViewHelper.StartNewIntent(this, Accueil.class);
+        finish();
     }
 
     public void GetAllSubsAvailable()
@@ -80,6 +80,6 @@ public class Abonnement extends AppCompatActivity {
     public void ApplySubscription(AbonnementData _sub)
     {
         FirebaseManager.ChangeUserDataValue("mSubscription", _sub.mName);
-        ViewHelper.StartNewIntent(this, Home.class);
+        ViewHelper.StartNewIntent(this, Home.class, true);
     }
 }
