@@ -431,9 +431,10 @@ public class FirebaseManager {
                  FirebaseUser _user = mAuthDatabase.getCurrentUser();
                  _userData.mMail = _user.getEmail();
                  _userData.mID = _user.getUid();
-                 _userData.mName = _user.getUid();
+                 _userData.mName = _account.getFamilyName();
                  _userData.mPhone = _user.getPhoneNumber();
-                RegisterUser(_activity, _userData, _successCallback, null);
+                AddUserToDatabase(_userData);
+                _successCallback.accept(null);
             }
         });
     }
@@ -502,13 +503,13 @@ public class FirebaseManager {
 
     public static void LoadImage(View _tag, Context _context, Resources _res, String _path, int _width, int _height, Consumer<Drawable> _onImageLoaded)
     {
-        /*TargetWrapper _target = new TargetWrapper(_context, _res, _onImageLoaded, _path);
+        TargetWrapper _target = new TargetWrapper(_context, _res, _onImageLoaded, _path);
         _tag.setTag(_target);
 
         Picasso _picasso = new Picasso.Builder(_context).addRequestHandler(new StockageRequest()).build();
 
         if(_width <= 0 && _height <= 0) _picasso.load(_path).into(_target.GetTarget());
-        else _picasso.load(_path).resize(_width,_height).into(_target.GetTarget());*/
+        else _picasso.load(_path).resize(_width,_height).into(_target.GetTarget());
     }
 
     public static void LoadCategoryImage(FORMAT_IMAGE _formatImage, View _tag, Context _context, Resources _res, String _nameCategory, int _width, int _height, Consumer<Drawable> _onImageLoaded)
