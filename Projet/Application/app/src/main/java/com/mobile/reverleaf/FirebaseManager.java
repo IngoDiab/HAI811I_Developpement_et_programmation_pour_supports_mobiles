@@ -1,29 +1,37 @@
 package com.mobile.reverleaf;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -31,20 +39,22 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
 public class FirebaseManager {
 
-    private static FirebaseAuth mAuthDatabase = FirebaseAuth.getInstance();
-    private static FirebaseDatabase mRootDatabase = FirebaseDatabase.getInstance("https://reverleafdb-default-rtdb.europe-west1.firebasedatabase.app");
-    private static DatabaseReference mUserReference = mRootDatabase.getReference("Users");
-    private static DatabaseReference mSubsReference = mRootDatabase.getReference("Subscription");
-    private static DatabaseReference mEventsReference = mRootDatabase.getReference("Event");
-    private static DatabaseReference mCategoriesReference = mRootDatabase.getReference("Category");
+    private static final FirebaseAuth mAuthDatabase = FirebaseAuth.getInstance();
+    private static final FirebaseDatabase mRootDatabase = FirebaseDatabase.getInstance("https://reverleafdb-default-rtdb.europe-west1.firebasedatabase.app");
+    private static final DatabaseReference mUserReference = mRootDatabase.getReference("Users");
+    private static final DatabaseReference mSubsReference = mRootDatabase.getReference("Subscription");
+    private static final DatabaseReference mEventsReference = mRootDatabase.getReference("Event");
+    private static final DatabaseReference mCategoriesReference = mRootDatabase.getReference("Category");
+    private static final FirebaseStorage mStorage = FirebaseStorage.getInstance("gs://reverleafdb.appspot.com");
 
-    public static void LoadCurrentUserData(@Nullable Consumer<UserData> _onUserLoaded, @Nullable Consumer<AbonnementData> _onSubLoaded)
+    public static FirebaseStorage GetStorage() {return mStorage;}
+
+    public static void LoadCurrentUserData(@Nullable Consumer<UserData> _onUserLoaded)
     {
         FirebaseUser _currentUser = mAuthDatabase.getCurrentUser();
         if(_currentUser ==  null) return;
@@ -103,14 +113,14 @@ public class FirebaseManager {
                         {
                             case MY_EVENTS_CARD:
                                 _nameMethod = "CreateMyEventCard";
-                                _parametersTypes = new Class[]{Activity.class, FragmentManager.class};
-                                _parameters = new Object[]{_activity, _fragManager};
+                                _parametersTypes = new Class[]{Activity.class, Resources.class, FragmentManager.class};
+                                _parameters = new Object[]{_activity, _activity.getResources(), _fragManager};
                                 break;
 
                             case EVENTS_SEARCHED:
                                 _nameMethod = "CreateSearchedCard";
-                                _parametersTypes = new Class[]{Activity.class};
-                                _parameters = new Object[]{_activity};
+                                _parametersTypes = new Class[]{Activity.class, Resources.class};
+                                _parameters = new Object[]{_activity, _activity.getResources()};
                                 break;
 
                             case EVENTS_INSCRIPTIONS_CARD:
@@ -369,7 +379,28 @@ public class FirebaseManager {
         mCategoriesReference.addListenerForSingleValueEvent(_listener);
     }
 
-    public static void RegisterUser(Activity _activity, UserData _newUser, Consumer<Task<AuthResult>> _successCallback, Consumer<Task<AuthResult>> _failCallback)
+    public static void GetCategorie(String _categoryName, Consumer<CategoryData> _categCallback)
+    {
+        ValueEventListener _listener = new ValueEventListener(){
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot)
+            {
+                for (DataSnapshot dsp : snapshot.getChildren())
+                {
+                    if(!dsp.child("mName").getValue(String.class).equals(_categoryName)) continue;
+                    _categCallback.accept(dsp.getValue(CategoryData.class));
+                    return;
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        mCategoriesReference.addListenerForSingleValueEvent(_listener);
+    }
+
+    public static void RegisterUser(Activity _activity, UserData _newUser, Consumer<Task<AuthResult>> _successCallback, @Nullable Consumer<Task<AuthResult>> _failCallback)
     {
         mAuthDatabase.createUserWithEmailAndPassword(_newUser.mMail, _newUser.mPassword).addOnCompleteListener(_activity, new OnCompleteListener<AuthResult>() {
             @Override
@@ -379,7 +410,30 @@ public class FirebaseManager {
                     AddUserToDatabase(_newUser);
                     _successCallback.accept(_task);
                 }
-                else _failCallback.accept(_task);
+                else if(_failCallback != null) _failCallback.accept(_task);
+            }
+        });
+    }
+
+    public static void GoogleSignIn(GoogleSignInAccount _account, Activity _activity, Consumer<Task<AuthResult>> _successCallback)
+    {
+        AuthCredential _credit = GoogleAuthProvider.getCredential(_account.getIdToken(), null);
+        mAuthDatabase.signInWithCredential(_credit).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+            @Override
+            public void onSuccess(AuthResult authResult)
+            {
+                 if(!authResult.getAdditionalUserInfo().isNewUser())
+                 {
+                     _successCallback.accept(null);
+                     return;
+                 }
+                 UserData _userData = new UserData();
+                 FirebaseUser _user = mAuthDatabase.getCurrentUser();
+                 _userData.mMail = _user.getEmail();
+                 _userData.mID = _user.getUid();
+                 _userData.mName = _user.getUid();
+                 _userData.mPhone = _user.getPhoneNumber();
+                RegisterUser(_activity, _userData, _successCallback, null);
             }
         });
     }
@@ -442,5 +496,43 @@ public class FirebaseManager {
     public static void SignOut()
     {
         mAuthDatabase.signOut();
+    }
+
+    private static ArrayList<TargetWrapper> _targets = new ArrayList<TargetWrapper>();
+
+    public static void LoadImage(View _tag, Context _context, Resources _res, String _path, int _width, int _height, Consumer<Drawable> _onImageLoaded)
+    {
+        /*TargetWrapper _target = new TargetWrapper(_context, _res, _onImageLoaded, _path);
+        _tag.setTag(_target);
+
+        Picasso _picasso = new Picasso.Builder(_context).addRequestHandler(new StockageRequest()).build();
+
+        if(_width <= 0 && _height <= 0) _picasso.load(_path).into(_target.GetTarget());
+        else _picasso.load(_path).resize(_width,_height).into(_target.GetTarget());*/
+    }
+
+    public static void LoadCategoryImage(FORMAT_IMAGE _formatImage, View _tag, Context _context, Resources _res, String _nameCategory, int _width, int _height, Consumer<Drawable> _onImageLoaded)
+    {
+        GetCategorie(_nameCategory, _category->GetFormattedImagePath(_formatImage, _tag, _context, _res, _category, _width, _height, _onImageLoaded));
+    }
+
+    private static void GetFormattedImagePath(FORMAT_IMAGE _formatImage, View _tag, Context _context, Resources _res, CategoryData _category, int _width, int _height, Consumer<Drawable> _onImageLoaded)
+    {
+        String _pathImage = "";
+        switch(_formatImage)
+        {
+
+            case SQUARED:
+                _pathImage = _category.mPathImageSquare;
+                break;
+
+            case BACKGROUND:
+            case RECTANGLE:
+
+            default:
+                _pathImage = _category.mPathImage;
+                break;
+        }
+        LoadImage(_tag, _context, _res, _pathImage, _width, _height, _onImageLoaded);
     }
 }

@@ -63,7 +63,7 @@ public class Abonnement extends AppCompatActivity {
     {
         for(AbonnementData _subData : _listData)
         {
-            LinearLayout _cardSub = ViewHelper.CreateSubCard(this, _subData.mName, _subData.mPrice, (_view)->OpenPopUpSubscription(_subData));
+            LinearLayout _cardSub = ViewHelper.CreateSubCard(this, getResources(), _subData, (_view)->OpenPopUpSubscription(_subData));
             mSubsList.addView(_cardSub);
         }
     }

@@ -10,6 +10,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -190,11 +191,11 @@ public class ViewHelper {
             _globalView.addView(_card);
     }
 
-    public static LinearLayout CreateSubCard(Context _context, String _nameCard, Float _priceCard, Consumer<View> _clickCallback)
+    public static LinearLayout CreateSubCard(Context _context, Resources _resources, AbonnementData _subData, Consumer<View> _clickCallback)
     {
         int _margin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, _context.getResources().getDisplayMetrics());
         int _height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, _context.getResources().getDisplayMetrics());
-        int _width = LinearLayout.LayoutParams.MATCH_PARENT;
+        int _width = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 320, _context.getResources().getDisplayMetrics());
 
         //Layout
         LinearLayout _layoutCard = new LinearLayout(_context);
@@ -209,7 +210,7 @@ public class ViewHelper {
         BindOnClick(_imageButton, _clickCallback);
         _imageButton.setLayoutParams(new LinearLayout.LayoutParams(_width, _height));
         _imageButton.setBackgroundColor(Color.TRANSPARENT);
-        _imageButton.setImageDrawable(ContextCompat.getDrawable(_context, R.drawable.abo_bronze));
+        FirebaseManager.LoadImage(_imageButton, _context, _resources, _subData.mPathImage, _width, _height, _drawable->_imageButton.setImageDrawable(_drawable));
         _layoutCard.addView(_imageButton);
 
 
@@ -226,7 +227,7 @@ public class ViewHelper {
         //Name
         TextView _name = new TextView(_context);
         _name.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-        _name.setText(_nameCard);
+        _name.setText(_subData.mName);
         _name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         _name.setPadding(_margin/2,0,0,0);
         _name.setTextColor(ContextCompat.getColor(_context, R.color.white));
@@ -237,7 +238,7 @@ public class ViewHelper {
         //Price
         TextView _price = new TextView(_context);
         _price.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-        _price.setText(String.format("%.02f", _priceCard)+"€");
+        _price.setText(String.format("%.02f", _subData.mPrice)+"€");
         _price.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
         _price.setPadding(0,0,_margin,0);
         _price.setTextColor(ContextCompat.getColor(_context, R.color.white));
@@ -248,7 +249,7 @@ public class ViewHelper {
         return _layoutCard;
     }
 
-    public static LinearLayout CreateMyEventCard(Context _context, String _nameCard, Consumer<View> _clickCallback, @Nullable Consumer<View> _deleteCallback)
+    public static LinearLayout CreateMyEventCard(Context _context, Resources _resources, String _nameCategory, String _nameCard, Consumer<View> _clickCallback, @Nullable Consumer<View> _deleteCallback)
     {
         int _heightDelete = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 26, _context.getResources().getDisplayMetrics());
         int _margin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, _context.getResources().getDisplayMetrics());
@@ -281,8 +282,8 @@ public class ViewHelper {
         BindOnClick(_imageButton, _clickCallback);
         _imageButton.setLayoutParams(new LinearLayout.LayoutParams(_width, _height));
         _imageButton.setBackgroundColor(Color.TRANSPARENT);
-        _imageButton.setImageDrawable(ContextCompat.getDrawable(_context, R.drawable.abo_bronze));
         _layoutCard.addView(_imageButton);
+        FirebaseManager.LoadCategoryImage(FORMAT_IMAGE.RECTANGLE, _imageButton, _context, _resources, _nameCategory, 0,0, _drawable->_imageButton.setImageDrawable(_drawable));
 
         //Card
         CardView _cardView = new CardView(_context);
@@ -312,7 +313,7 @@ public class ViewHelper {
         return _layoutCard;
     }
 
-    public static LinearLayout CreateCategoryCard(Context _context, String _nameCard, Consumer<View> _clickCallback)
+    public static LinearLayout CreateCategoryCard(Context _context, Resources _resources, String _nameCategory, Consumer<View> _clickCallback)
     {
         int _margin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, _context.getResources().getDisplayMetrics());
         int _height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, _context.getResources().getDisplayMetrics());
@@ -331,9 +332,8 @@ public class ViewHelper {
         BindOnClick(_imageButton, _clickCallback);
         _imageButton.setLayoutParams(new LinearLayout.LayoutParams(_width, _height));
         _imageButton.setBackgroundColor(Color.TRANSPARENT);
-        _imageButton.setImageDrawable(ContextCompat.getDrawable(_context, R.drawable.abo_bronze));
         _layoutCard.addView(_imageButton);
-
+        FirebaseManager.LoadCategoryImage(FORMAT_IMAGE.RECTANGLE, _imageButton, _context, _resources, _nameCategory, 0,0, _drawable->_imageButton.setImageDrawable(_drawable));
 
         //Card
         CardView _cardView = new CardView(_context);
@@ -348,7 +348,7 @@ public class ViewHelper {
         //Name
         TextView _name = new TextView(_context);
         _name.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-        _name.setText(_nameCard);
+        _name.setText(_nameCategory);
         _name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         _name.setPadding(_margin/2,0,0,0);
         _name.setTextColor(ContextCompat.getColor(_context, R.color.white));
@@ -359,7 +359,7 @@ public class ViewHelper {
         return _layoutCard;
     }
 
-    public static LinearLayout CreateHomeCard(Context _context, String _nameCard, @Nullable Float _priceCard, Consumer<View> _clickCallback)
+    public static LinearLayout CreateHomeCard(Context _context, Resources _resources, String _nameCard, String _nameCategory, @Nullable Float _priceCard, Consumer<View> _clickCallback)
     {
         int _marginTopLayout = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, _context.getResources().getDisplayMetrics());
         int _marginLeftLayout = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, _context.getResources().getDisplayMetrics());
@@ -380,8 +380,8 @@ public class ViewHelper {
         BindOnClick(_imageButton, _clickCallback);
         _imageButton.setLayoutParams(new LinearLayout.LayoutParams(_width, _height));
         _imageButton.setBackgroundColor(Color.TRANSPARENT);
-        _imageButton.setImageDrawable(ContextCompat.getDrawable(_context, R.drawable.abo_bronze));
         _layoutCard.addView(_imageButton);
+        FirebaseManager.LoadCategoryImage(FORMAT_IMAGE.SQUARED, _imageButton, _context, _resources, _nameCategory, _width,_height, _drawable->_imageButton.setImageDrawable(_drawable));
 
         //Card
         CardView _cardView = new CardView(_context);

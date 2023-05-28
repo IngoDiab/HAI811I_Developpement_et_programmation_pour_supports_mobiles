@@ -10,12 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.List;
 
 public class MyEvents_Fragment extends Fragment {
 
     Button mCreateEventButton;
+    TextView mWarningMsg;
     LinearLayout mMyEventList;
 
     public MyEvents_Fragment() {
@@ -29,10 +31,16 @@ public class MyEvents_Fragment extends Fragment {
         return fragment;
     }
 
-    public void InitializeButtons(View _viewFragment)
+    public void InitializeButtons(View _viewFragment, boolean _canCreateEvents)
     {
         mCreateEventButton = ViewHelper.GetViewElement(_viewFragment, R.id.createEventButton);
-        ViewHelper.BindOnClick(mCreateEventButton, _view->ViewHelper.SwitchFragment(getParentFragmentManager(), Categories_Fragment.class));
+        mWarningMsg = ViewHelper.GetViewElement(_viewFragment, R.id.warningMsg);
+        if(_canCreateEvents)
+        {
+            mWarningMsg.setVisibility(View.GONE);
+            ViewHelper.BindOnClick(mCreateEventButton, _view->ViewHelper.SwitchFragment(getParentFragmentManager(), Categories_Fragment.class));
+        }
+        else mCreateEventButton.setVisibility(View.GONE);
     }
 
     public void InitializeLayout(View _viewFragment)
@@ -56,7 +64,9 @@ public class MyEvents_Fragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View _view = inflater.inflate(R.layout.fragment_myevents, container, false);
-        InitializeButtons(_view);
+
+        FirebaseManager.LoadCurrentUserData(_userData->InitializeButtons(_view, _userData.mSubscription.equalsIgnoreCase("Premium")));
+
         InitializeLayout(_view);
 
         LoadMyEvents();

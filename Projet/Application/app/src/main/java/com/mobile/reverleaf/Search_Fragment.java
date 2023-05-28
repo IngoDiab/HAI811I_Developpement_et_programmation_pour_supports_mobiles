@@ -95,7 +95,7 @@ public class Search_Fragment extends Fragment {
     {
         for(CategoryData _category : _listCategories)
         {
-            LinearLayout _cardCategory = ViewHelper.CreateHomeCard(getActivity(), _category.mName, null, _view -> AddToCategoriesSearched(_view, _category));
+            LinearLayout _cardCategory = ViewHelper.CreateHomeCard(getActivity(), getResources(), _category.mName, _category.mName,null, _view -> AddToCategoriesSearched(_view, _category));
             mCategoriesLayout.addView(_cardCategory);
         }
     }

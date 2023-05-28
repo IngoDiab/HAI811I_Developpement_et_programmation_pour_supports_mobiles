@@ -129,7 +129,7 @@ public class Inscription extends AppCompatActivity {
 
     public void OnSuccessInscription()
     {
-        FirebaseManager.LoadCurrentUserData(_userData->ViewHelper.StartNewIntent(this, Abonnement.class, true), null);
+        FirebaseManager.LoadCurrentUserData(_userData->ViewHelper.StartNewIntent(this, Abonnement.class, true));
     }
 
     public void OnFailedInscription()

@@ -9,3 +9,4 @@ public enum CARD_MOD
     EVENTS_TENDANCES_CARD,
     EVENTS_SEARCHED
 }
+

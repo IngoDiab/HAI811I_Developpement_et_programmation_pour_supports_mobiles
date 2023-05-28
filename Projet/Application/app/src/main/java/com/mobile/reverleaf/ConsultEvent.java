@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
@@ -21,6 +22,7 @@ public abstract class ConsultEvent extends AppCompatActivity {
     protected List<Button> mSelectedButtons = new ArrayList<>();
     protected ImageButton mFavoris;
     protected Button mInscription, mSearchSame;
+    protected ConstraintLayout mMainLayout;
     protected LinearLayout mLayout;
 
     protected boolean mUserIsOwnerEvent = false, mUserIsRegisteredToThisEvent = false, mUserHasInFavoris = false;
@@ -46,7 +48,13 @@ public abstract class ConsultEvent extends AppCompatActivity {
 
     protected void InitializeLayouts()
     {
+        mMainLayout = ViewHelper.GetViewElement(this, R.id.mainLayout);
         mLayout = ViewHelper.GetViewElement(this, R.id.layoutEvent);
+
+        String _categoryName = getClass().getName().replace("com.mobile.reverleaf.ConsultEvent_","");
+        FirebaseManager.LoadCategoryImage(FORMAT_IMAGE.BACKGROUND, mMainLayout, this, getResources(), _categoryName, 0,0, _drawable->{
+            mMainLayout.setBackground(_drawable);
+        });
     }
 
     protected void InitializeTextViews()

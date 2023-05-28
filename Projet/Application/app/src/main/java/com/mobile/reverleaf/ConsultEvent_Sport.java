@@ -1,6 +1,7 @@
 package com.mobile.reverleaf;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 public class ConsultEvent_Sport extends ConsultEvent {
@@ -32,6 +33,8 @@ public class ConsultEvent_Sport extends ConsultEvent {
         super.FillView(_eventDataBundle);
         mSport.setText(_eventDataBundle.getString(Integer.toString(R.id.eventSport)));
         mChampionnat.setText(_eventDataBundle.getString(Integer.toString(R.id.eventChampionnat)));
-        mDuree.setText(_eventDataBundle.getString(Integer.toString(R.id.eventDuree))+" minutes");
+
+        String _duree = _eventDataBundle.getString(Integer.toString(R.id.eventDuree));
+        mDuree.setText(_duree.equals("") || _duree == null ? "" : _duree+" minutes");
     }
 }

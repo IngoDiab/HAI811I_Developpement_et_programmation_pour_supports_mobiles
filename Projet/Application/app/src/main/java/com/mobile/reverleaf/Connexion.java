@@ -81,7 +81,7 @@ public class Connexion extends AppCompatActivity {
     public void OnSuccessConnexion()
     {
         Consumer<UserData> _onUserLoaded = _user -> LoadAbonnementOrHub(_user);
-        FirebaseManager.LoadCurrentUserData(_onUserLoaded,null);
+        FirebaseManager.LoadCurrentUserData(_onUserLoaded);
     }
 
     public void LoadAbonnementOrHub(UserData _user)

@@ -5,7 +5,7 @@
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ConsultEvent_Sport">
+    tools:context=".ConsultEvent_Concert">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
@@ -218,29 +218,29 @@
 
                         </androidx.cardview.widget.CardView>
 
-                            <Button
-                                android:id="@+id/eventLieu"
-                                android:layout_marginLeft="20dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginRight="20dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="38dp"
-                                android:backgroundTint="@color/mainColor"
-                                android:ems="10"
-                                android:text="Lieu"
-                                android:paddingLeft="20dp"/>
+                        <Button
+                            android:id="@+id/eventLieu"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="38dp"
+                            android:backgroundTint="@color/mainColor"
+                            android:ems="10"
+                            android:text="Lieu"
+                            android:paddingLeft="20dp"/>
 
-                            <Button
-                                android:id="@+id/eventDate"
-                                android:layout_marginLeft="20dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginRight="20dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="38dp"
-                                android:backgroundTint="@color/mainColor"
-                                android:ems="10"
-                                android:text="Date"
-                                android:paddingLeft="20dp"/>
+                        <Button
+                            android:id="@+id/eventDate"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="38dp"
+                            android:backgroundTint="@color/mainColor"
+                            android:ems="10"
+                            android:text="Date"
+                            android:paddingLeft="20dp"/>
 
                         <Button
                             android:id="@+id/eventPrice"
@@ -264,13 +264,13 @@
                             app:cardElevation="4dp">
 
                             <TextView
-                                android:id="@+id/eventSport"
+                                android:id="@+id/eventChanteur"
                                 android:layout_width="match_parent"
                                 android:layout_height="38dp"
                                 android:background="@null"
                                 android:gravity="center_vertical"
                                 android:ems="10"
-                                android:hint="Sport"
+                                android:hint="Chanteur"
                                 android:inputType="text"
                                 android:paddingLeft="20dp"
                                 android:textColorHint="@color/grayColor" />
@@ -288,38 +288,14 @@
                             app:cardElevation="4dp">
 
                             <TextView
-                                android:id="@+id/eventChampionnat"
+                                android:id="@+id/eventTypeMusic"
                                 android:layout_width="match_parent"
                                 android:layout_height="38dp"
                                 android:background="@null"
                                 android:gravity="center_vertical"
                                 android:inputType="text"
                                 android:paddingLeft="20dp"
-                                android:hint="Championnat"
-                                android:textColorHint="@color/grayColor" />
-
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginRight="20dp"
-                            app:cardCornerRadius="3dp"
-                            app:cardElevation="4dp">
-
-                            <TextView
-                                android:id="@+id/eventDuree"
-                                android:layout_width="match_parent"
-                                android:layout_height="38dp"
-                                android:background="@null"
-                                android:gravity="center_vertical"
-                                android:ems="10"
-                                android:hint="Durée du match"
-                                android:inputType="numberDecimal"
-                                android:paddingLeft="20dp"
+                                android:hint="Type de musique"
                                 android:textColorHint="@color/grayColor" />
 
 

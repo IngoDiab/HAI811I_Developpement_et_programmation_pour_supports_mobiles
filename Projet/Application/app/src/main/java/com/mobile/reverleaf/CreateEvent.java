@@ -27,7 +27,7 @@ public abstract class CreateEvent extends AppCompatActivity {
     protected AutocompleteSupportFragment mLieu;
     protected String mChosenLieuAdress = "";
     protected LatLng mChosenLieuLatLng;
-    LinearLayout mErrorLayout;
+    LinearLayout mMainLayout, mErrorLayout;
     TextView mDate, mErrorText;
     protected Button mCreate, mBackButton;
 
@@ -57,8 +57,13 @@ public abstract class CreateEvent extends AppCompatActivity {
 
     public void InitializeLayout()
     {
+        mMainLayout = ViewHelper.GetViewElement(this, R.id.mainLayout);
+
         mErrorLayout = ViewHelper.GetViewElement(this, R.id.errorLayout);
         mErrorLayout.setVisibility(View.GONE);
+
+        String _categoryName = getClass().getName().replace("com.mobile.reverleaf.CreateEvent_","");
+        FirebaseManager.LoadCategoryImage(FORMAT_IMAGE.BACKGROUND, mMainLayout, this, getResources(), _categoryName, 0,0, _drawable->mMainLayout.setBackground(_drawable));
     }
 
     public void InitializeTextViews()

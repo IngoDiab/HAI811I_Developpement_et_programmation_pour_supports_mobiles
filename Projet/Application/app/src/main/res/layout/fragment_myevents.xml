@@ -41,6 +41,15 @@
             android:backgroundTint="@color/mainColor"
             android:text="Créer un évènement" />
 
+        <TextView
+            android:id="@+id/warningMsg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="Vous devez avoir un abonnement Premium pour créer un évent"
+            android:textColor="@color/cardBoard" />
+
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

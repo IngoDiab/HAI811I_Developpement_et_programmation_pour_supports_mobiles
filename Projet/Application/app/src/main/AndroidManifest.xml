@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -14,18 +14,27 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Reverleaf"
         tools:targetApi="31">
-        <activity
-            android:name=".ConsultEvent_Sport"
-            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDJcAmHkXXV3x3JRHSpp-XJV4BCJW75-jw" />
 
         <activity
-            android:name=".CreateEvent_Sport"
-            android:windowSoftInputMode="adjustResize"
+            android:name=".CreateEvent_Concert"
             android:exported="false" />
+
+        <activity
+            android:name=".ConsultEvent_Concert"
+            android:exported="false" />
+
+        <activity
+            android:name=".CreateEvent_Sport"
+            android:exported="false" />
+
+        <activity
+            android:name=".ConsultEvent_Sport"
+            android:exported="false" />
+
         <activity
             android:name=".PopUp_Abonnements"
             android:exported="false" />

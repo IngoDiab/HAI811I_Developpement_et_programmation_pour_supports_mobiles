@@ -1,6 +1,7 @@
 package com.mobile.reverleaf;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 
@@ -49,19 +50,19 @@ public class EventData implements Serializable {
         this.mNbFavoris = 0;
     }
 
-    public LinearLayout CreateMyEventCard(Activity _activity, FragmentManager _fragManager)
+    public LinearLayout CreateMyEventCard(Activity _activity, Resources _resources, FragmentManager _fragManager)
     {
-        return ViewHelper.CreateMyEventCard(_activity.getApplicationContext(), mName, _view -> DisplayEvent(_activity), _view -> RemoveEvent(_fragManager));
+        return ViewHelper.CreateMyEventCard(_activity.getApplicationContext(), _resources, mTypeEvent, mName, _view -> DisplayEvent(_activity), _view -> RemoveEvent(_fragManager));
     }
 
-    public LinearLayout CreateSearchedCard(Activity _activity)
+    public LinearLayout CreateSearchedCard(Activity _activity, Resources _resources)
     {
-        return ViewHelper.CreateMyEventCard(_activity.getApplicationContext(), mName, _view -> DisplayEvent(_activity), null);
+        return ViewHelper.CreateMyEventCard(_activity.getApplicationContext(), _resources, mTypeEvent, mName, _view -> DisplayEvent(_activity), null);
     }
 
     public LinearLayout CreateHomeCard(Activity _activity, Boolean _showPrice)
     {
-        return ViewHelper.CreateHomeCard(_activity.getApplicationContext(), mName, _showPrice ? mPrice : null, _view -> DisplayEvent(_activity));
+        return ViewHelper.CreateHomeCard(_activity.getApplicationContext(), _activity.getResources(), mName, mTypeEvent,_showPrice ? mPrice : null, _view -> DisplayEvent(_activity));
     }
 
     public Bundle DisplayEvent(Activity _activity)
