@@ -50,6 +50,7 @@ public class FirebaseManager {
     private static final DatabaseReference mSubsReference = mRootDatabase.getReference("Subscription");
     private static final DatabaseReference mEventsReference = mRootDatabase.getReference("Event");
     private static final DatabaseReference mCategoriesReference = mRootDatabase.getReference("Category");
+    private static final DatabaseReference mGroupsReference = mRootDatabase.getReference("Groups");
     private static final FirebaseStorage mStorage = FirebaseStorage.getInstance("gs://reverleafdb.appspot.com");
 
     public static FirebaseStorage GetStorage() {return mStorage;}
@@ -503,13 +504,13 @@ public class FirebaseManager {
 
     public static void LoadImage(View _tag, Context _context, Resources _res, String _path, int _width, int _height, Consumer<Drawable> _onImageLoaded)
     {
-        TargetWrapper _target = new TargetWrapper(_context, _res, _onImageLoaded, _path);
+        /*TargetWrapper _target = new TargetWrapper(_context, _res, _onImageLoaded, _path);
         _tag.setTag(_target);
 
         Picasso _picasso = new Picasso.Builder(_context).addRequestHandler(new StockageRequest()).build();
 
         if(_width <= 0 && _height <= 0) _picasso.load(_path).into(_target.GetTarget());
-        else _picasso.load(_path).resize(_width,_height).into(_target.GetTarget());
+        else _picasso.load(_path).resize(_width,_height).into(_target.GetTarget());*/
     }
 
     public static void LoadCategoryImage(FORMAT_IMAGE _formatImage, View _tag, Context _context, Resources _res, String _nameCategory, int _width, int _height, Consumer<Drawable> _onImageLoaded)
@@ -535,5 +536,117 @@ public class FirebaseManager {
                 break;
         }
         LoadImage(_tag, _context, _res, _pathImage, _width, _height, _onImageLoaded);
+    }
+
+    public static void RegisterGroup(String _groupName, Consumer<GroupData> _onGroupCreated)
+    {
+        FirebaseUser _currentUser = mAuthDatabase.getCurrentUser();
+        if(_currentUser ==  null) return;
+        DatabaseReference _refNewEvent = mGroupsReference.push();
+
+        GroupData _group = new GroupData();
+        _group.mIDOwner = _currentUser.getUid();
+        _group.mID = _refNewEvent.getKey();
+        _group.mName = _groupName;
+        _group.mIDUsers.add(_group.mIDOwner);
+
+        _refNewEvent.setValue(_group);
+
+        _onGroupCreated.accept(_group);
+
+        AddToListUserDataValue(true, "mIDGroups", _group.mID, null);
+    }
+
+    public static void AddUserToGroup(String _idGroup, String _userMail, Consumer<String> _onUserAdded, Consumer<String> _onUserAlreadyIn)
+    {
+        ValueEventListener _listener = new ValueEventListener(){
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dsp : snapshot.getChildren())
+                {
+                    String _mail = dsp.child("mMail").getValue(String.class);
+                    if(!_mail.equalsIgnoreCase(_userMail)) continue;
+                    String _idUser = dsp.getKey();
+                    List<String> _groupsID = new ArrayList<String>();
+                    for (DataSnapshot _groupID : dsp.child("mIDGroups").getChildren()) {
+                        _groupsID.add(_groupID.getValue(String.class));
+                    }
+                    if(_groupsID.contains(_idGroup))
+                    {
+                        _onUserAlreadyIn.accept(_userMail);
+                        break;
+                    }
+
+                    _onUserAdded.accept(_userMail);
+                    _groupsID.add(_idGroup);
+                     mUserReference.child(_idUser).child("mIDGroups").setValue(_groupsID);
+
+
+                    ValueEventListener _groupListener = new ValueEventListener()
+                    {
+
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot)
+                        {
+                            List<String> _usersID = new ArrayList<String>();
+                            for (DataSnapshot _groupID : snapshot.getChildren())
+                            {
+                                _usersID.add(_groupID.getValue(String.class));
+                            }
+                            _usersID.add(_idUser);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    };
+                    mGroupsReference.child(_idGroup).child("mIDUsers").addListenerForSingleValueEvent(_groupListener);
+                    break;
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        mUserReference.addListenerForSingleValueEvent(_listener);
+    }
+
+    public static void LoadGroups(Activity _activity, LinearLayout _listGroups)
+    {
+        FirebaseUser _currentUser = mAuthDatabase.getCurrentUser();
+        if(_currentUser ==  null) return;
+        ValueEventListener _listener = new ValueEventListener(){
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dsp : snapshot.getChildren()) {
+                    String _idEvent = dsp.getValue(String.class);
+
+                    ValueEventListener _listenerGroup = new ValueEventListener()
+                    {
+
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot)
+                        {
+                            GroupData _group = snapshot.getValue(GroupData.class);
+                            LinearLayout _groupCard = _group.CreateHomeCard(_activity);
+                            _listGroups.addView(_groupCard);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    };
+                    mGroupsReference.child(_idEvent).addListenerForSingleValueEvent(_listenerGroup);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        mUserReference.child(_currentUser.getUid()).child("mIDGroups").addListenerForSingleValueEvent(_listener);
     }
 }

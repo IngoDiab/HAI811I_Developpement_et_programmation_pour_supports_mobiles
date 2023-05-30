@@ -185,6 +185,16 @@ public class ViewHelper {
         return _subscriptionPopUp;
     }
 
+    public static Dialog OpenAddUserPopUp(Context _context, int _idLayoutPopUp, String _idGroup, Consumer<String> _onUserAdded, Consumer<String> _onUserAlreadyIn)
+    {
+        Dialog _addUserPopUp = OpenPopUp(_context, _idLayoutPopUp);
+        EditText _userMail = ViewHelper.GetViewElement(_addUserPopUp.getWindow(), R.id.userMail);
+        Button _addUser = ViewHelper.GetViewElement(_addUserPopUp.getWindow(), R.id.addUser);
+        ViewHelper.BindOnClick(_addUser, _view->FirebaseManager.AddUserToGroup(_idGroup, _userMail.getText().toString(), _onUserAdded, _onUserAlreadyIn));
+
+        return _addUserPopUp;
+    }
+
     public static void DisplayCardsLoadedEvents(LinearLayout _globalView, List<LinearLayout> _myCards)
     {
         for(LinearLayout _card : _myCards)
@@ -415,6 +425,52 @@ public class ViewHelper {
         _price.setTextSize(18);
         _price.setTypeface(_price.getTypeface(), Typeface.BOLD_ITALIC);
         _cardView.addView(_price);
+
+        return _layoutCard;
+    }
+
+    public static LinearLayout CreateGroupCard(Context _context, Resources _resources, String _nameCard, Consumer<View> _clickCallback)
+    {
+        int _margin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, _context.getResources().getDisplayMetrics());
+        int _height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, _context.getResources().getDisplayMetrics());
+        int _width = LinearLayout.LayoutParams.MATCH_PARENT;
+
+        //Layout
+        LinearLayout _layoutCard = new LinearLayout(_context);
+        LinearLayout.LayoutParams _paramsLayoutCard = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        _paramsLayoutCard.gravity = Gravity.CENTER;
+        _paramsLayoutCard.topMargin = _margin;
+        _layoutCard.setLayoutParams(_paramsLayoutCard);
+        _layoutCard.setOrientation(LinearLayout.VERTICAL);
+
+        //ImageButton
+        ImageButton _imageButton = new ImageButton(_context);
+        BindOnClick(_imageButton, _clickCallback);
+        _imageButton.setLayoutParams(new LinearLayout.LayoutParams(_width, _height));
+        _imageButton.setBackgroundColor(Color.TRANSPARENT);
+        _layoutCard.addView(_imageButton);
+        _imageButton.setImageDrawable(ContextCompat.getDrawable(_context, R.drawable.short_group));
+
+        //Card
+        CardView _cardView = new CardView(_context);
+        LinearLayout.LayoutParams _paramsCardView = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        _paramsCardView.topMargin = -_margin;
+        _cardView.setLayoutParams(_paramsCardView);
+        _cardView.setCardBackgroundColor(ContextCompat.getColor(_context, R.color.mainColor));
+        _cardView.setRadius(3);
+        _cardView.setCardElevation(4);
+        _layoutCard.addView(_cardView);
+
+        //Name
+        TextView _name = new TextView(_context);
+        _name.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+        _name.setText(_nameCard);
+        _name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        _name.setPadding(_margin/2,0,0,0);
+        _name.setTextColor(ContextCompat.getColor(_context, R.color.white));
+        _name.setTextSize(18);
+        _name.setTypeface(_name.getTypeface(), Typeface.BOLD);
+        _cardView.addView(_name);
 
         return _layoutCard;
     }

@@ -7,8 +7,14 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class Group_Fragment extends Fragment {
+
+    Button mCreateGroupButton;
+    LinearLayout mGroupList;
 
     public Group_Fragment() {
         // Required empty public constructor
@@ -21,6 +27,18 @@ public class Group_Fragment extends Fragment {
         return fragment;
     }
 
+    public void InitializeButtons(View _viewFragment)
+    {
+        mCreateGroupButton = ViewHelper.GetViewElement(_viewFragment, R.id.createGroup);
+        ViewHelper.BindOnClick(mCreateGroupButton, _view->ViewHelper.StartNewIntent(getActivity(), CreateGroup.class, false));
+    }
+
+    public void InitializeLayout(View _viewFragment)
+    {
+        mGroupList = ViewHelper.GetViewElement(_viewFragment, R.id.group_list);
+        FirebaseManager.LoadGroups(getActivity(), mGroupList);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +47,10 @@ public class Group_Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_group, container, false);
+
+        View _view = inflater.inflate(R.layout.fragment_group, container, false);
+        InitializeLayout(_view);
+        InitializeButtons(_view);
+        return _view;
     }
 }

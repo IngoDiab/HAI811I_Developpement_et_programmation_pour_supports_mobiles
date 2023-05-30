@@ -14,6 +14,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Reverleaf"
         tools:targetApi="31">
+        <activity
+            android:name=".PopUp_AddUserToGroup"
+            android:exported="false" />
+        <activity
+            android:name=".ConsultGroup"
+            android:exported="false" />
+        <activity
+            android:name=".CreateGroup"
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -22,19 +31,15 @@
         <activity
             android:name=".CreateEvent_Concert"
             android:exported="false" />
-
         <activity
             android:name=".ConsultEvent_Concert"
             android:exported="false" />
-
         <activity
             android:name=".CreateEvent_Sport"
             android:exported="false" />
-
         <activity
             android:name=".ConsultEvent_Sport"
             android:exported="false" />
-
         <activity
             android:name=".PopUp_Abonnements"
             android:exported="false" />

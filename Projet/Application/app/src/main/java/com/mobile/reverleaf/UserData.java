@@ -17,11 +17,13 @@ public class UserData {
     public List<String> mIDCreatedEvents;
     public List<String> mIDInscritEvents;
     public List<String> mIDFavorisEvents;
+    public List<String> mIDGroups;
 
     public UserData() {
         mIDCreatedEvents = new ArrayList<>();
         mIDInscritEvents = new ArrayList<>();
         mIDFavorisEvents = new ArrayList<>();
+        mIDGroups = new ArrayList<>();
         this.mID = "None";
         this.mMail = "None";
         this.mPhone = "None";
@@ -36,6 +38,7 @@ public class UserData {
         mIDCreatedEvents = new ArrayList<>();
         mIDInscritEvents = new ArrayList<>();
         mIDFavorisEvents = new ArrayList<>();
+        mIDGroups = new ArrayList<>();
         this.mMail = _mail;
         this.mPhone = _phone;
         this.mPassword = _password;
