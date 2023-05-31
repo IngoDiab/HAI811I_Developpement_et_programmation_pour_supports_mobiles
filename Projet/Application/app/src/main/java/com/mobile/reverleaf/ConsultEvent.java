@@ -1,5 +1,6 @@
 package com.mobile.reverleaf;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +21,12 @@ public abstract class ConsultEvent extends AppCompatActivity {
     protected TextView mTitle, mDesc, mNbFavoris, mNbInscrits;
     protected Button mCategorie, mDate, mLieu, mPrice, mBackButton;
     protected List<Button> mSelectedButtons = new ArrayList<>();
-    protected ImageButton mFavoris;
+    protected ImageButton mFavoris, mShare;
     protected Button mInscription, mSearchSame;
     protected ConstraintLayout mMainLayout;
     protected LinearLayout mLayout;
+
+    protected String mEventID;
 
     protected boolean mUserIsOwnerEvent = false, mUserIsRegisteredToThisEvent = false, mUserHasInFavoris = false;
 
@@ -68,6 +71,7 @@ public abstract class ConsultEvent extends AppCompatActivity {
     protected void InitializeButton()
     {
         mFavoris = ViewHelper.GetViewElement(this, R.id.favorisButton);
+        mShare = ViewHelper.GetViewElement(this, R.id.shareButton);
 
         mCategorie = ViewHelper.GetViewElement(this, R.id.eventCategorie);
         mDate = ViewHelper.GetViewElement(this, R.id.eventDate);
@@ -83,6 +87,7 @@ public abstract class ConsultEvent extends AppCompatActivity {
     protected void BindButtons()
     {
         ViewHelper.BindOnClick(mFavoris, _view->ManageFavorisEvent(!mUserHasInFavoris));
+        ViewHelper.BindOnClick(mShare, _view->OpenPopUp());
 
         ViewHelper.BindOnClick(mCategorie, _view->ToggleSearch(mCategorie));
         ViewHelper.BindOnClick(mDate, _view->ToggleSearch(mDate));
@@ -93,6 +98,11 @@ public abstract class ConsultEvent extends AppCompatActivity {
         ViewHelper.BindOnClick(mSearchSame, _view->SearchSame());
 
         ViewHelper.BindOnClick(mBackButton, _view->finish());
+    }
+
+    private void OpenPopUp()
+    {
+        ViewHelper.OpenShareEventPopUp(this, R.layout.activity_pop_up_share_group, mEventID);
     }
 
     protected void SearchSame()
@@ -120,6 +130,7 @@ public abstract class ConsultEvent extends AppCompatActivity {
 
     protected void ManageInscriptionEvent(boolean _addOrRemoveInscrit)
     {
+        ViewHelper.PrintToast(this, "Integer.toString(_nbFavoris)");
         Bundle _bundle = getIntent().getExtras();
         String _eventID = _bundle.getString("ID");
         FirebaseManager.ManageInteractionWithEvent(_addOrRemoveInscrit, _eventID, "mIDInscritEvents", "mNbInscrits", _id->RefreshEvent(_id));
@@ -169,9 +180,8 @@ public abstract class ConsultEvent extends AppCompatActivity {
 
     protected void FillView(Bundle _eventDataBundle)
     {
-        String _eventID = _eventDataBundle.getString("ID");
-        RefreshEvent(_eventID);
-
+        mEventID = _eventDataBundle.getString("ID");
+        RefreshEvent(mEventID);
         mCategorie.setText(_eventDataBundle.getString(Integer.toString(R.id.eventCategorie)));
         mTitle.setText(_eventDataBundle.getString(Integer.toString(R.id.title)));
         mDesc.setText(_eventDataBundle.getString(Integer.toString(R.id.desc)));

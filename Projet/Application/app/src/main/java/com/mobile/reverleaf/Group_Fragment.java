@@ -27,21 +27,33 @@ public class Group_Fragment extends Fragment {
         return fragment;
     }
 
-    public void InitializeButtons(View _viewFragment)
+    private void InitializeButtons(View _viewFragment)
     {
         mCreateGroupButton = ViewHelper.GetViewElement(_viewFragment, R.id.createGroup);
         ViewHelper.BindOnClick(mCreateGroupButton, _view->ViewHelper.StartNewIntent(getActivity(), CreateGroup.class, false));
     }
 
-    public void InitializeLayout(View _viewFragment)
+    private void InitializeLayout(View _viewFragment)
     {
         mGroupList = ViewHelper.GetViewElement(_viewFragment, R.id.group_list);
-        FirebaseManager.LoadGroups(getActivity(), mGroupList);
+    }
+
+    private void LoadGroups()
+    {
+        mGroupList.removeAllViews();
+        FirebaseManager.LoadGroups(_group->{LinearLayout _groupCard = _group.CreateHomeCard(getActivity()); mGroupList.addView(_groupCard);});
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        LoadGroups();
     }
 
     @Override

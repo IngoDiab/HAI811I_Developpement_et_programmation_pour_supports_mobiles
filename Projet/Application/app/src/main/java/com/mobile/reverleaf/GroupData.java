@@ -38,6 +38,7 @@ public class GroupData {
         {
             String _index = Integer.toString(i);
             MessageData _msg = mMessages.get(i);
+            _bundle.putString("Message"+_index+"TypeMessage", _msg.mTypeMessage.name());
             _bundle.putString("Message"+_index+"Sender", _msg.mIDSender);
             _bundle.putString("Message"+_index+"Date", _msg.mDate);
             _bundle.putString("Message"+_index+"Content", _msg.mContent);

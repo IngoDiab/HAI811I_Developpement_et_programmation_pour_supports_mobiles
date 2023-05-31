@@ -15,6 +15,9 @@
         android:theme="@style/Theme.Reverleaf"
         tools:targetApi="31">
         <activity
+            android:name=".PopUp_ShareGroup"
+            android:exported="false" />
+        <activity
             android:name=".PopUp_AddUserToGroup"
             android:exported="false" />
         <activity

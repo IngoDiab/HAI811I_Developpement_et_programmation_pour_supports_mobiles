@@ -55,6 +55,25 @@ public class FirebaseManager {
 
     public static FirebaseStorage GetStorage() {return mStorage;}
 
+    public static String GetCurrentUserID()
+    {
+        FirebaseUser _currentUser = mAuthDatabase.getCurrentUser();
+        if(_currentUser ==  null) return "";
+        return _currentUser.getUid();
+    }
+
+    public static void GetUsernameFromId(String _id, Consumer<String> _onGetName)
+    {
+        mUserReference.child(_id).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                UserData _userData = task.getResult().getValue(UserData.class);
+                String _name = _userData.mSurname;
+                _onGetName.accept(_name.equals("") || _name.equals("None") ? _userData.mMail : _name);
+            }
+        });
+    }
+
     public static void LoadCurrentUserData(@Nullable Consumer<UserData> _onUserLoaded)
     {
         FirebaseUser _currentUser = mAuthDatabase.getCurrentUser();
@@ -129,6 +148,8 @@ public class FirebaseManager {
                                 _parametersTypes = new Class[]{Activity.class, Boolean.class};
                                 _parameters = new Object[]{_activity, false};
                                 break;
+
+                            case EVENTS_SHARED:
 
                             case EVENTS_TENDANCES_CARD:
 
@@ -594,6 +615,7 @@ public class FirebaseManager {
                                 _usersID.add(_groupID.getValue(String.class));
                             }
                             _usersID.add(_idUser);
+                            mGroupsReference.child(_idGroup).child("mIDUsers").setValue(_usersID);
                         }
 
                         @Override
@@ -613,7 +635,7 @@ public class FirebaseManager {
         mUserReference.addListenerForSingleValueEvent(_listener);
     }
 
-    public static void LoadGroups(Activity _activity, LinearLayout _listGroups)
+    public static void LoadGroups(Consumer<GroupData> _onGroupFound)
     {
         FirebaseUser _currentUser = mAuthDatabase.getCurrentUser();
         if(_currentUser ==  null) return;
@@ -621,7 +643,7 @@ public class FirebaseManager {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dsp : snapshot.getChildren()) {
-                    String _idEvent = dsp.getValue(String.class);
+                    String _idGroup = dsp.getValue(String.class);
 
                     ValueEventListener _listenerGroup = new ValueEventListener()
                     {
@@ -630,8 +652,7 @@ public class FirebaseManager {
                         public void onDataChange(@NonNull DataSnapshot snapshot)
                         {
                             GroupData _group = snapshot.getValue(GroupData.class);
-                            LinearLayout _groupCard = _group.CreateHomeCard(_activity);
-                            _listGroups.addView(_groupCard);
+                            _onGroupFound.accept(_group);
                         }
 
                         @Override
@@ -639,7 +660,7 @@ public class FirebaseManager {
 
                         }
                     };
-                    mGroupsReference.child(_idEvent).addListenerForSingleValueEvent(_listenerGroup);
+                    mGroupsReference.child(_idGroup).addListenerForSingleValueEvent(_listenerGroup);
                 }
             }
             @Override
@@ -648,5 +669,29 @@ public class FirebaseManager {
             }
         };
         mUserReference.child(_currentUser.getUid()).child("mIDGroups").addListenerForSingleValueEvent(_listener);
+    }
+
+    public static void SendMessage(String _idGroup, MessageData _message, @Nullable Consumer<MessageData> _onMsgSent)
+    {
+        ValueEventListener _listener = new ValueEventListener(){
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<MessageData> _messages = new ArrayList<>();
+                for (DataSnapshot dsp : snapshot.getChildren())
+                {
+                    _messages.add(dsp.getValue(MessageData.class));
+                }
+                _messages.add(_message);
+                mGroupsReference.child(_idGroup).child("mMessages").setValue(_messages);
+                if(_onMsgSent != null) _onMsgSent.accept(_message);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        mGroupsReference.child(_idGroup).child("mMessages").addListenerForSingleValueEvent(_listener);
     }
 }

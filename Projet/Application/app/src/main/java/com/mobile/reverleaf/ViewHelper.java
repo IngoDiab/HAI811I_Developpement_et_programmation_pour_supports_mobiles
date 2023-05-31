@@ -1,5 +1,6 @@
 package com.mobile.reverleaf;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -45,6 +46,15 @@ import com.paypal.checkout.order.CaptureOrderResult;
 import com.paypal.checkout.paymentbutton.PaymentButtonContainer;
 
 public class ViewHelper {
+
+    public static void RefreshView(Activity _activity, @Nullable Bundle _bundle)
+    {
+        Intent _intent = _activity.getIntent();
+        _intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        if(_bundle!=null)_intent.putExtras(_bundle);
+        _activity.finish();
+        _activity.startActivity(_intent);
+    }
 
     public static void PrintToast(Context _context, String _message)
     {
@@ -195,6 +205,20 @@ public class ViewHelper {
         return _addUserPopUp;
     }
 
+    public static Dialog OpenShareEventPopUp(Context _context, int _idLayoutPopUp, String _eventIDToShare)
+    {
+        ViewHelper.PrintToast(_context, _eventIDToShare);
+        Dialog _shareEventPopUp = OpenPopUp(_context, _idLayoutPopUp);
+        LinearLayout _listGroup = ViewHelper.GetViewElement(_shareEventPopUp.getWindow(), R.id.group_list);
+        FirebaseManager.LoadGroups(_group->{
+            MessageData _message = new MessageData(MESSAGE_TYPE.EVENT_SHARED_MSG, _eventIDToShare);
+            LinearLayout _groupLayout = CreateShareGroupsInfo(_context, _group, _groupShared->FirebaseManager.SendMessage(_groupShared.mID, _message, null));
+            _listGroup.addView(_groupLayout);
+        });
+
+        return _shareEventPopUp;
+    }
+
     public static void DisplayCardsLoadedEvents(LinearLayout _globalView, List<LinearLayout> _myCards)
     {
         for(LinearLayout _card : _myCards)
@@ -240,7 +264,7 @@ public class ViewHelper {
         _name.setText(_subData.mName);
         _name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         _name.setPadding(_margin/2,0,0,0);
-        _name.setTextColor(ContextCompat.getColor(_context, R.color.white));
+        _name.setTextColor(ContextCompat.getColor(_context, R.color.cardBoard));
         _name.setTextSize(18);
         _name.setTypeface(_name.getTypeface(), Typeface.BOLD);
         _cardView.addView(_name);
@@ -251,7 +275,7 @@ public class ViewHelper {
         _price.setText(String.format("%.02f", _subData.mPrice)+"€");
         _price.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
         _price.setPadding(0,0,_margin,0);
-        _price.setTextColor(ContextCompat.getColor(_context, R.color.white));
+        _price.setTextColor(ContextCompat.getColor(_context, R.color.cardBoard));
         _price.setTextSize(18);
         _price.setTypeface(_price.getTypeface(), Typeface.BOLD_ITALIC);
         _cardView.addView(_price);
@@ -311,7 +335,7 @@ public class ViewHelper {
         _name.setText(_nameCard);
         _name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         _name.setPadding(_margin/2,0,0,0);
-        _name.setTextColor(ContextCompat.getColor(_context, R.color.white));
+        _name.setTextColor(ContextCompat.getColor(_context, R.color.cardBoard));
         _name.setTextSize(18);
         _name.setTypeface(_name.getTypeface(), Typeface.BOLD);
         _cardView.addView(_name);
@@ -361,7 +385,7 @@ public class ViewHelper {
         _name.setText(_nameCategory);
         _name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         _name.setPadding(_margin/2,0,0,0);
-        _name.setTextColor(ContextCompat.getColor(_context, R.color.white));
+        _name.setTextColor(ContextCompat.getColor(_context, R.color.cardBoard));
         _name.setTextSize(18);
         _name.setTypeface(_name.getTypeface(), Typeface.BOLD);
         _cardView.addView(_name);
@@ -409,7 +433,7 @@ public class ViewHelper {
         _name.setText(_nameCard);
         if(_priceCard == null) _name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         _name.setPadding(_marginTopLayout/2,0,0,0);
-        _name.setTextColor(ContextCompat.getColor(_context, R.color.white));
+        _name.setTextColor(ContextCompat.getColor(_context, R.color.cardBoard));
         _name.setTextSize(18);
         _name.setTypeface(_name.getTypeface(), Typeface.BOLD);
         _cardView.addView(_name);
@@ -421,7 +445,7 @@ public class ViewHelper {
         _price.setText(String.format("%.02f", _priceCard)+"€");
         _price.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
         _price.setPadding(0,0,_marginTopLayout,0);
-        _price.setTextColor(ContextCompat.getColor(_context, R.color.white));
+        _price.setTextColor(ContextCompat.getColor(_context, R.color.cardBoard));
         _price.setTextSize(18);
         _price.setTypeface(_price.getTypeface(), Typeface.BOLD_ITALIC);
         _cardView.addView(_price);
@@ -467,11 +491,159 @@ public class ViewHelper {
         _name.setText(_nameCard);
         _name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         _name.setPadding(_margin/2,0,0,0);
-        _name.setTextColor(ContextCompat.getColor(_context, R.color.white));
+        _name.setTextColor(ContextCompat.getColor(_context, R.color.cardBoard));
         _name.setTextSize(18);
         _name.setTypeface(_name.getTypeface(), Typeface.BOLD);
         _cardView.addView(_name);
 
         return _layoutCard;
+    }
+
+    public static LinearLayout CreateMessage(Context _context, MessageData _message)
+    {
+        int _marginLittleSide = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, _context.getResources().getDisplayMetrics());
+        int _marginBigSide = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, _context.getResources().getDisplayMetrics());
+        boolean _isUserOwner = _message.mIDSender.equalsIgnoreCase(FirebaseManager.GetCurrentUserID());
+
+        //Layout
+        LinearLayout _layoutMessage = new LinearLayout(_context);
+        LinearLayout.LayoutParams _paramsLayoutMsg = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        _paramsLayoutMsg.topMargin = _marginLittleSide;
+        _paramsLayoutMsg.leftMargin = _isUserOwner ? _marginBigSide : _marginLittleSide;
+        _paramsLayoutMsg.rightMargin = _isUserOwner ? _marginLittleSide : _marginBigSide;
+        _layoutMessage.setLayoutParams(_paramsLayoutMsg);
+        if(_isUserOwner) _layoutMessage.setGravity(Gravity.RIGHT);
+        _layoutMessage.setOrientation(LinearLayout.VERTICAL);
+
+        if(!_isUserOwner) {
+            //Name
+            TextView _nameText = new TextView(_context);
+            _nameText.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            FirebaseManager.GetUsernameFromId(_message.mIDSender, _name -> _nameText.setText(_name));
+            _nameText.setTextColor(ContextCompat.getColor(_context, R.color.cardBoard));
+            _nameText.setTextSize(12);
+            _nameText.setTypeface(_nameText.getTypeface(), Typeface.BOLD);
+            _layoutMessage.addView(_nameText);
+        }
+
+        //Msg
+        TextView _msgText = new TextView(_context);
+        _msgText.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        _msgText.setText(_message.mContent);
+        _msgText.setTextColor(ContextCompat.getColor(_context, _isUserOwner ? R.color.cardBoard : R.color.mainColor));
+        _msgText.setBackgroundColor(ContextCompat.getColor(_context, _isUserOwner ? R.color.clickedColor : R.color.cardBoard));
+        _msgText.setPadding(10,0,10,0);
+        _msgText.setTextSize(18);
+        _layoutMessage.addView(_msgText);
+
+        //Date
+        TextView _dateText = new TextView(_context);
+        _dateText.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        _dateText.setText(_message.mDate);
+        _dateText.setTextColor(ContextCompat.getColor(_context, R.color.cardBoard));
+        _dateText.setTextSize(12);
+        _dateText.setTypeface(_dateText.getTypeface(), Typeface.BOLD);
+        _layoutMessage.addView(_dateText);
+
+        return _layoutMessage;
+    }
+
+    public static List<LinearLayout> CreateMessagesSharedEvent(Context _context, List<LinearLayout> _events, List<MessageData> _messagesList)
+    {
+        int _marginLittleSide = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, _context.getResources().getDisplayMetrics());
+        int _marginBigSide = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, _context.getResources().getDisplayMetrics());
+        String _currentUserID = FirebaseManager.GetCurrentUserID();
+
+        List<LinearLayout> _encapsulatedEvent = new ArrayList<>();
+        for(int i=0; i<_events.size(); ++i)
+        {
+            LinearLayout _cardEvent = _events.get(i);
+            MessageData _message = _messagesList.get(i);
+            boolean _isUserOwner = _message.mIDSender.equalsIgnoreCase(_currentUserID);
+
+            //Layout
+            LinearLayout _layoutMessage = new LinearLayout(_context);
+            LinearLayout.LayoutParams _paramsLayoutMsg = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+            _paramsLayoutMsg.topMargin = _marginLittleSide;
+            _paramsLayoutMsg.leftMargin = _isUserOwner ? _marginBigSide : _marginLittleSide;
+            _paramsLayoutMsg.rightMargin = _isUserOwner ? _marginLittleSide : _marginBigSide;
+            _layoutMessage.setLayoutParams(_paramsLayoutMsg);
+            if (_isUserOwner) _layoutMessage.setGravity(Gravity.RIGHT);
+            _layoutMessage.setOrientation(LinearLayout.VERTICAL);
+
+            if (!_isUserOwner) {
+                //Name
+                TextView _nameText = new TextView(_context);
+                _nameText.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                FirebaseManager.GetUsernameFromId(_message.mIDSender, _name -> _nameText.setText(_name));
+                _nameText.setTextColor(ContextCompat.getColor(_context, R.color.cardBoard));
+                _nameText.setTextSize(12);
+                _nameText.setTypeface(_nameText.getTypeface(), Typeface.BOLD);
+                _layoutMessage.addView(_nameText);
+            }
+
+            //Event
+            _layoutMessage.addView(_cardEvent);
+
+            //Date
+            TextView _dateText = new TextView(_context);
+            _dateText.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            _dateText.setText(_message.mDate);
+            _dateText.setTextColor(ContextCompat.getColor(_context, R.color.cardBoard));
+            _dateText.setTextSize(12);
+            _dateText.setTypeface(_dateText.getTypeface(), Typeface.BOLD);
+            _layoutMessage.addView(_dateText);
+
+            _encapsulatedEvent.add(_layoutMessage);
+        }
+
+        return _encapsulatedEvent;
+    }
+
+    private static LinearLayout CreateShareGroupsInfo(Context _context, GroupData _group, Consumer<GroupData> _onShareGroupClicked)
+    {
+        int _paddingBottom = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, _context.getResources().getDisplayMetrics());
+        int _height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, _context.getResources().getDisplayMetrics());
+
+        //Layout
+        LinearLayout _layoutGroup = new LinearLayout(_context);
+        LinearLayout.LayoutParams _paramsLayoutMsg = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        _layoutGroup.setLayoutParams(_paramsLayoutMsg);
+        _layoutGroup.setPadding(0,0,0,_paddingBottom);
+        _layoutGroup.setOrientation(LinearLayout.VERTICAL);
+
+        //Card
+        CardView _cardView = new CardView(_context);
+        LinearLayout.LayoutParams _paramsCardView = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, _height);
+        _paramsCardView.bottomMargin = _paddingBottom/2;
+        _cardView.setLayoutParams(_paramsCardView);
+        _cardView.setCardBackgroundColor(ContextCompat.getColor(_context, R.color.cardBoard));
+        _cardView.setRadius(3);
+        _cardView.setCardElevation(4);
+        _layoutGroup.addView(_cardView);
+
+        //Msg
+        TextView _msgText = new TextView(_context);
+        _msgText.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+        _msgText.setText(_group.mName);
+        _msgText.setTextColor(ContextCompat.getColor(_context, R.color.mainColor));
+        _msgText.setBackgroundColor(ContextCompat.getColor(_context, R.color.cardBoard));
+        _msgText.setPadding(10,0,10,0);
+        _msgText.setTextSize(24);
+        _msgText.setTypeface(_msgText.getTypeface(), Typeface.BOLD);
+        _msgText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        _msgText.setGravity(Gravity.CENTER);
+        _cardView.addView(_msgText);
+
+        //Button Share
+        Button _button = new Button(_context);
+        _button.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        _button.setTextColor(ContextCompat.getColor(_context, R.color.mainColor));
+        _button.setBackgroundColor(ContextCompat.getColor(_context, R.color.cardBoard));
+        _button.setText("PARTAGER");
+        _layoutGroup.addView(_button);
+        BindOnClick(_button, _view->_onShareGroupClicked.accept(_group));
+
+        return _layoutGroup;
     }
 }
