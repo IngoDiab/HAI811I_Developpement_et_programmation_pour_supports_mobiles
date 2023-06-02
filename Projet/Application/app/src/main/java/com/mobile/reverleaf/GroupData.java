@@ -23,7 +23,7 @@ public class GroupData {
         mMessages = new ArrayList<>();
     }
 
-    public LinearLayout CreateHomeCard(Activity _activity)
+    public LinearLayout CreateGroupCard(Activity _activity)
     {
         return ViewHelper.CreateGroupCard(_activity.getApplicationContext(), _activity.getResources(), mName, _view -> ConsultGroup(_activity));
     }

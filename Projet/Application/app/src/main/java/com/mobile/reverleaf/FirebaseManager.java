@@ -52,8 +52,10 @@ public class FirebaseManager {
     private static final DatabaseReference mCategoriesReference = mRootDatabase.getReference("Category");
     private static final DatabaseReference mGroupsReference = mRootDatabase.getReference("Groups");
     private static final FirebaseStorage mStorage = FirebaseStorage.getInstance("gs://reverleafdb.appspot.com");
+    private static final String mGroupPicturePath = "gs://reverleafdb.appspot.com/Images/Groups/group.png";
 
     public static FirebaseStorage GetStorage() {return mStorage;}
+    public static String GetGroupPicturePath() {return mGroupPicturePath;}
 
     public static String GetCurrentUserID()
     {
@@ -118,62 +120,63 @@ public class FirebaseManager {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<LinearLayout> _cards = new ArrayList<LinearLayout>();
-                for(DataSnapshot _id : snapshot.getChildren()) {
-                    if (!_tagetIDs.contains(_id.getKey())) continue;
-                    try {
-                        //Get class corresponding to Data of this EventType
-                        Class<?> _classEvent = Class.forName("com.mobile.reverleaf.EventData_" + (String) _id.child("mTypeEvent").getValue());
-                        //Load EventData
-                        Object _event = _id.getValue(_classEvent);
-                        String _nameMethod = "";
-                        Class<?>[] _parametersTypes = {};
-                        Object[] _parameters = {};
+                for(String _idEvent : _tagetIDs) {
+                    for (DataSnapshot _id : snapshot.getChildren()) {
+                        if (!_idEvent.equals(_id.getKey())) continue;
+                        try {
+                            //Get class corresponding to Data of this EventType
+                            Class<?> _classEvent = Class.forName("com.mobile.reverleaf.EventData_" + (String) _id.child("mTypeEvent").getValue());
+                            //Load EventData
+                            Object _event = _id.getValue(_classEvent);
+                            String _nameMethod = "";
+                            Class<?>[] _parametersTypes = {};
+                            Object[] _parameters = {};
 
-                        switch(_mod)
-                        {
-                            case MY_EVENTS_CARD:
-                                _nameMethod = "CreateMyEventCard";
-                                _parametersTypes = new Class[]{Activity.class, Resources.class, FragmentManager.class};
-                                _parameters = new Object[]{_activity, _activity.getResources(), _fragManager};
-                                break;
+                            switch (_mod) {
+                                case MY_EVENTS_CARD:
+                                    _nameMethod = "CreateMyEventCard";
+                                    _parametersTypes = new Class[]{Activity.class, Resources.class, FragmentManager.class};
+                                    _parameters = new Object[]{_activity, _activity.getResources(), _fragManager};
+                                    break;
 
-                            case EVENTS_SEARCHED:
-                                _nameMethod = "CreateSearchedCard";
-                                _parametersTypes = new Class[]{Activity.class, Resources.class};
-                                _parameters = new Object[]{_activity, _activity.getResources()};
-                                break;
+                                case EVENTS_SEARCHED:
+                                    _nameMethod = "CreateSearchedCard";
+                                    _parametersTypes = new Class[]{Activity.class, Resources.class};
+                                    _parameters = new Object[]{_activity, _activity.getResources()};
+                                    break;
 
-                            case EVENTS_INSCRIPTIONS_CARD:
-                                _nameMethod = "CreateHomeCard";
-                                _parametersTypes = new Class[]{Activity.class, Boolean.class};
-                                _parameters = new Object[]{_activity, false};
-                                break;
+                                case EVENTS_INSCRIPTIONS_CARD:
+                                    _nameMethod = "CreateHomeCard";
+                                    _parametersTypes = new Class[]{Activity.class, Boolean.class};
+                                    _parameters = new Object[]{_activity, false};
+                                    break;
 
-                            case EVENTS_SHARED:
+                                case EVENTS_SHARED:
 
-                            case EVENTS_TENDANCES_CARD:
+                                case EVENTS_TENDANCES_CARD:
 
-                            case EVENTS_PROXIMITY_CARD:
+                                case EVENTS_PROXIMITY_CARD:
 
-                            case EVENTS_FAVORIS_CARD:
-                                _nameMethod = "CreateHomeCard";
-                                _parametersTypes = new Class[]{Activity.class, Boolean.class};
-                                _parameters = new Object[]{_activity, true};
-                                break;
+                                case EVENTS_FAVORIS_CARD:
+                                    _nameMethod = "CreateHomeCard";
+                                    _parametersTypes = new Class[]{Activity.class, Boolean.class};
+                                    _parameters = new Object[]{_activity, true};
+                                    break;
 
-                            default:
-                                break;
+                                default:
+                                    break;
+                            }
+                            //Get method corresponding to CreateCard
+                            Method _createCard = _classEvent.getMethod(_nameMethod, _parametersTypes);
+                            //Create card of this eventData
+                            LinearLayout _card = (LinearLayout) _createCard.invoke(_event, _parameters);
+                            _cards.add(_card);
+                        } catch (ClassNotFoundException e) {
+                        } catch (NoSuchMethodException e) {
+                        } catch (IllegalAccessException e) {
+                        } catch (InvocationTargetException e) {
                         }
-                        //Get method corresponding to CreateCard
-                        Method _createCard = _classEvent.getMethod(_nameMethod, _parametersTypes);
-                        //Create card of this eventData
-                        LinearLayout _card = (LinearLayout) _createCard.invoke(_event, _parameters);
-                        _cards.add(_card);
                     }
-                    catch (ClassNotFoundException e) {}
-                    catch (NoSuchMethodException e) {}
-                    catch (IllegalAccessException e) {}
-                    catch (InvocationTargetException e) {}
                 }
                 _getCardsCallback.accept(_cards);
             }
@@ -525,13 +528,13 @@ public class FirebaseManager {
 
     public static void LoadImage(View _tag, Context _context, Resources _res, String _path, int _width, int _height, Consumer<Drawable> _onImageLoaded)
     {
-        /*TargetWrapper _target = new TargetWrapper(_context, _res, _onImageLoaded, _path);
+        TargetWrapper _target = new TargetWrapper(_context, _res, _onImageLoaded, _path);
         _tag.setTag(_target);
 
         Picasso _picasso = new Picasso.Builder(_context).addRequestHandler(new StockageRequest()).build();
 
         if(_width <= 0 && _height <= 0) _picasso.load(_path).into(_target.GetTarget());
-        else _picasso.load(_path).resize(_width,_height).into(_target.GetTarget());*/
+        else _picasso.load(_path).resize(_width,_height).into(_target.GetTarget());
     }
 
     public static void LoadCategoryImage(FORMAT_IMAGE _formatImage, View _tag, Context _context, Resources _res, String _nameCategory, int _width, int _height, Consumer<Drawable> _onImageLoaded)

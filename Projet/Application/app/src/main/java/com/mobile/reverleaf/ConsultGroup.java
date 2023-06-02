@@ -78,7 +78,7 @@ public class ConsultGroup extends AppCompatActivity {
         ViewHelper.BindOnClick(mBackButton, _view->finish());
 
         mSendButton = ViewHelper.GetViewElement(this, R.id.sendButton);
-        ViewHelper.BindOnClick(mSendButton, _view->SendMessage());
+        ViewHelper.BindOnClick(mSendButton, _view->SendMessage(MESSAGE_TYPE.TEXT_MSG, mMsgText.getText().toString()));
     }
 
     private void OpenPopUp()
@@ -88,7 +88,7 @@ public class ConsultGroup extends AppCompatActivity {
 
     private void NotifyUserAdded(String _mail)
     {
-        ViewHelper.PrintToast(this, "L'utilisateur avec l'adresse "+ _mail +" a été ajouté.");
+        SendMessage(MESSAGE_TYPE.GROUP_NOTIFICATION_MSG, _mail+" a été ajouté à la conversation !");
         mCurrentPopUp.dismiss();
         mCurrentPopUp = null;
     }
@@ -132,6 +132,8 @@ public class ConsultGroup extends AppCompatActivity {
                     break;
 
                 case GROUP_NOTIFICATION_MSG:
+                    _msgCard = ViewHelper.CreateGroupNotif(this, _msg);
+                    mAllMsgLayout.addView(_msgCard);
                     break;
 
                 default:
@@ -149,21 +151,13 @@ public class ConsultGroup extends AppCompatActivity {
             mAllMsgLayout.addView(_allCardLayoutsEncapsulated.get(i),mEventsIndex.get(i));
     }
 
-    private void SendMessage()
+    private void SendMessage(MESSAGE_TYPE _typMsg, String _contentMsg)
     {
-        MessageData _message = new MessageData();
-        _message.mIDSender = FirebaseManager.GetCurrentUserID();
-        _message.mContent = mMsgText.getText().toString();
-        
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        formatter.setTimeZone(TimeZone.getTimeZone("Europe/Paris"));
-        Date date = new Date();
-        _message.mDate = formatter.format(date);
-
-        FirebaseManager.SendMessage(mIDGroup, _message, _msg->mMsgText.setText(""));
+        MessageData _message = new MessageData(_typMsg, _contentMsg);
 
         Bundle _bundle = getIntent().getExtras();
         String _nbMessages = _bundle.getString("NbMessage");
+        if(_nbMessages == null) _nbMessages = "0";
         _bundle.putString("Message"+_nbMessages+"TypeMessage", _message.mTypeMessage.name());
         _bundle.putString("Message"+_nbMessages+"Sender", _message.mIDSender);
         _bundle.putString("Message"+_nbMessages+"Date", _message.mDate);
@@ -172,6 +166,6 @@ public class ConsultGroup extends AppCompatActivity {
         else _bundle.putString("NbMessage",Integer.toString(Integer.parseInt(_nbMessages)+1));
 
 
-        ViewHelper.RefreshView(this, _bundle);
+        FirebaseManager.SendMessage(mIDGroup, _message, _msg->ViewHelper.RefreshView(this, _bundle));
     }
 }

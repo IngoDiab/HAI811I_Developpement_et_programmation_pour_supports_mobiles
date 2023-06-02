@@ -53,7 +53,6 @@ public class MyEvents_Fragment extends Fragment {
         FirebaseManager.LoadEventsFromUserList(CARD_MOD.MY_EVENTS_CARD, getActivity(), getParentFragmentManager(), "mIDCreatedEvents", _cards->ViewHelper.DisplayCardsLoadedEvents(mMyEventList, _cards));
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

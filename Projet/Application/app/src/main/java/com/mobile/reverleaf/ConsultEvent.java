@@ -130,7 +130,6 @@ public abstract class ConsultEvent extends AppCompatActivity {
 
     protected void ManageInscriptionEvent(boolean _addOrRemoveInscrit)
     {
-        ViewHelper.PrintToast(this, "Integer.toString(_nbFavoris)");
         Bundle _bundle = getIntent().getExtras();
         String _eventID = _bundle.getString("ID");
         FirebaseManager.ManageInteractionWithEvent(_addOrRemoveInscrit, _eventID, "mIDInscritEvents", "mNbInscrits", _id->RefreshEvent(_id));

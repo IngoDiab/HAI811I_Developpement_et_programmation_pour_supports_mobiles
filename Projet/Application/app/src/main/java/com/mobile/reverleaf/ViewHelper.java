@@ -207,7 +207,6 @@ public class ViewHelper {
 
     public static Dialog OpenShareEventPopUp(Context _context, int _idLayoutPopUp, String _eventIDToShare)
     {
-        ViewHelper.PrintToast(_context, _eventIDToShare);
         Dialog _shareEventPopUp = OpenPopUp(_context, _idLayoutPopUp);
         LinearLayout _listGroup = ViewHelper.GetViewElement(_shareEventPopUp.getWindow(), R.id.group_list);
         FirebaseManager.LoadGroups(_group->{
@@ -473,7 +472,7 @@ public class ViewHelper {
         _imageButton.setLayoutParams(new LinearLayout.LayoutParams(_width, _height));
         _imageButton.setBackgroundColor(Color.TRANSPARENT);
         _layoutCard.addView(_imageButton);
-        _imageButton.setImageDrawable(ContextCompat.getDrawable(_context, R.drawable.short_group));
+        FirebaseManager.LoadImage(_imageButton, _context, _resources, FirebaseManager.GetGroupPicturePath(), 0,0, _drawable->_imageButton.setImageDrawable(_drawable));
 
         //Card
         CardView _cardView = new CardView(_context);
@@ -583,6 +582,9 @@ public class ViewHelper {
             }
 
             //Event
+            LinearLayout.LayoutParams _paramsLayoutCard = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+            if (_isUserOwner) _layoutMessage.setGravity(Gravity.RIGHT);
+            _cardEvent.setLayoutParams(_paramsLayoutCard);
             _layoutMessage.addView(_cardEvent);
 
             //Date
@@ -645,5 +647,30 @@ public class ViewHelper {
         BindOnClick(_button, _view->_onShareGroupClicked.accept(_group));
 
         return _layoutGroup;
+    }
+
+    public static LinearLayout CreateGroupNotif(Context _context, MessageData _notif)
+    {
+        int _margin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, _context.getResources().getDisplayMetrics());
+
+        //Layout
+        LinearLayout _layoutNotif = new LinearLayout(_context);
+        LinearLayout.LayoutParams _paramsLayoutNotif = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        _paramsLayoutNotif.topMargin = _margin;
+        _layoutNotif.setLayoutParams(_paramsLayoutNotif);
+        _layoutNotif.setPadding(0,0,0,_margin);
+        _layoutNotif.setOrientation(LinearLayout.VERTICAL);
+
+        //Msg
+        TextView _msgText = new TextView(_context);
+        _msgText.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+        _msgText.setText(_notif.mContent);
+        _msgText.setTextColor(ContextCompat.getColor(_context, R.color.grayColor));
+        _msgText.setBackgroundColor(ContextCompat.getColor(_context, R.color.blackTransparent));
+        _msgText.setTypeface(_msgText.getTypeface(), Typeface.BOLD);
+        _msgText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        _layoutNotif.addView(_msgText);
+
+        return _layoutNotif;
     }
 }

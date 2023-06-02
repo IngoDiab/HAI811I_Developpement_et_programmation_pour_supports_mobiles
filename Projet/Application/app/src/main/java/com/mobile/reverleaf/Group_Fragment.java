@@ -41,7 +41,7 @@ public class Group_Fragment extends Fragment {
     private void LoadGroups()
     {
         mGroupList.removeAllViews();
-        FirebaseManager.LoadGroups(_group->{LinearLayout _groupCard = _group.CreateHomeCard(getActivity()); mGroupList.addView(_groupCard);});
+        FirebaseManager.LoadGroups(_group->{LinearLayout _groupCard = _group.CreateGroupCard(getActivity()); mGroupList.addView(_groupCard);});
     }
 
     @Override

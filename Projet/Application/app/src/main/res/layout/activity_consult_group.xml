@@ -75,25 +75,6 @@
             android:orientation="vertical"
             android:paddingBottom="10dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical"
-                android:paddingBottom="10dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#8A000000"
-                    android:text="Ingo a ajouté ta mère"
-                    android:textAlignment="center"
-                    android:textColor="@color/grayColor">
-
-                </TextView>
-
-            </LinearLayout>
-
         </LinearLayout>
 
     </ScrollView>

@@ -9,9 +9,11 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 public class CreateGroup extends AppCompatActivity {
-    Button mCreateGroup;
+    LinearLayout mMainLayout;
+    Button mCreateGroup, mBackButton;
     EditText mGroupName;
 
     @Override
@@ -19,14 +21,24 @@ public class CreateGroup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
 
+        InitializeLayout();
         InitializeButtons();
         InitializeEditText();
+    }
+
+    public void InitializeLayout()
+    {
+        mMainLayout = ViewHelper.GetViewElement(this, R.id.mainLayout);
+        FirebaseManager.LoadImage(mMainLayout, this, getResources(), FirebaseManager.GetGroupPicturePath(), 0,0, _drawable->mMainLayout.setBackground(_drawable));
     }
 
     public void InitializeButtons()
     {
         mCreateGroup = ViewHelper.GetViewElement(this, R.id.createButton);
         ViewHelper.BindOnClick(mCreateGroup, _view->CreateGroupFirebase());
+
+        mBackButton = ViewHelper.GetViewElement(this, R.id.backButton);
+        ViewHelper.BindOnClick(mBackButton, _view->finish());
     }
 
     public void InitializeEditText()
